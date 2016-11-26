@@ -41,7 +41,9 @@ public class PlayerInputController : MonoBehaviour
         _animator.SetFloat(AnimationParameters.HORIZONTAL, input.x);
         _animator.SetFloat(AnimationParameters.VERTICAL, input.z);
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        bool didJump = Input.GetKeyUp(KeyCode.Space);
+
+        if (didJump && input.z >= 0 && input.x == 0)
         {
             _animator.SetTrigger(AnimationParameters.JUMP);
         }
