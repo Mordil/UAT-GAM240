@@ -16,8 +16,8 @@ public class Health : MonoBehaviour
     /// <summary>
     /// The current health of the object as a percentage (in decimal format).
     /// </summary>
-    public float CurrentHealthPercentage { get { return _currentHealth / _maxHealth; } }
-
+    public float CurrentHealthPercentage { get { return (float)_currentHealth / (float)_maxHealth; } }
+    
     /// <summary>
     /// Raised when the object is killed.
     /// </summary>

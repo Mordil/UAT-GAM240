@@ -13,7 +13,7 @@ public class DebugHealthText : MonoBehaviour
         if (_healthComponent == null)
         {
             _healthComponent = GetComponent<Health>();
-
+            
             if (_healthComponent == null)
             {
                 this.enabled = false;
@@ -23,12 +23,9 @@ public class DebugHealthText : MonoBehaviour
 
     private void Update()
     {
-        if (_textComponent != null)
-        {
-            _textComponent.text = string.Format(
-                "Current Health: {0} ({1}%)",
-                _healthComponent.CurrentHealth,
-                Mathf.RoundToInt(_healthComponent.CurrentHealthPercentage * 100f));
-        }
+        _textComponent.text = string.Format(
+            "Current Health: {0} ({1}%)",
+            _healthComponent.CurrentHealth,
+            Mathf.RoundToInt(_healthComponent.CurrentHealthPercentage * 100f));
     }
 }
