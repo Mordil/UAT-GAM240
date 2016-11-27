@@ -39,7 +39,6 @@ GameObject:
   - 33: {fileID: 33000012769265716}
   - 23: {fileID: 23000010470186632}
   - 114: {fileID: 114000014245583578}
-  - 65: {fileID: 65000013906736678}
   m_Layer: 0
   m_Name: Prefab_Weapon_01
   m_TagString: Untagged
@@ -139,18 +138,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011782854004}
   m_Mesh: {fileID: 4300000, guid: 479217c3b9925c74bbbeb7790c5c82a8, type: 3}
---- !u!65 &65000013906736678
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011782854004}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 20, y: 70, z: 5}
-  m_Center: {x: 1, y: 40, z: 0}
 --- !u!114 &114000010365806186
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -176,6 +163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damage: 3
   _animation: 1
+  _owner: {fileID: 0}
   _iKTarget: {fileID: 4000013102157102}
 --- !u!136 &136000011947953132
 CapsuleCollider:

@@ -37,6 +37,7 @@ public class Health : MonoBehaviour
     [SerializeField]
     [Tooltip("Can the health go over the max value.")]
     private bool _allowOverhealing;
+    private bool _hasCalledOnKilled;
 
     [SerializeField]
     [Tooltip("The max health this object can reach.")]
@@ -56,9 +57,10 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-        if (_currentHealth <= 0)
+        if (_currentHealth <= 0 && !_hasCalledOnKilled)
         {
             OnKilled.Invoke();
+            _hasCalledOnKilled = true;
         }
     }
     #endregion

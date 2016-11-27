@@ -4,12 +4,26 @@ using System;
 
 public class CharacterManager : MonoBehaviour
 {
+    private struct SpellNames
+    {
+        public const string FIREBALL = "fireball";
+    }
+
+    private const string DEATH_ANIMATION_TRIGGER = "Has Died";
+
     [SerializeField]
     private Health _healthComponent;
     public Health Health { get { return _healthComponent; } }
 
     [SerializeField]
-    protected WeaponAgent WeaponAgentComponent;
+    private WeaponAgent _weaponAgent;
+    public WeaponAgent WeaponAgentComponent { get { return _weaponAgent; } }
+
+    [SerializeField]
+    private float _meleeAttackDistance = 2f;
+
+    [SerializeField]
+    private Animator _animator;
 
     /// <summary>
     /// Unity lifecycle event.
@@ -23,7 +37,12 @@ public class CharacterManager : MonoBehaviour
 
         if (WeaponAgentComponent == null)
         {
-            WeaponAgentComponent = GetComponent<WeaponAgent>();
+            _weaponAgent = GetComponent<WeaponAgent>();
+        }
+
+        if (_animator == null)
+        {
+            _animator = GetComponent<Animator>();
         }
     }
 
@@ -37,10 +56,7 @@ public class CharacterManager : MonoBehaviour
 
         if (!TryHandlePickup(colliderObj))
         {
-            if (!TryHandleDamage(colliderObj))
-            {
-                return;
-            }
+            return;
         }
     }
 
@@ -49,7 +65,53 @@ public class CharacterManager : MonoBehaviour
     /// </summary>
     public void Kill()
     {
+        _animator.SetTrigger(DEATH_ANIMATION_TRIGGER);
+        Invoke("HideSelf", 3);
+
+        var rigidbody = GetComponent<Rigidbody>();
+        if (rigidbody != null)
+        {
+            rigidbody.isKinematic = true;
+        }
+
+        var collider = GetComponent<Collider>();
+        if (collider != null)
+        {
+            collider.enabled = false;
+        }
+    }
+
+    private void MeleeAttackHitCheck()
+    {
+        RaycastHit info;
+        Vector3 offsetOrigin = transform.position + transform.up;
+        Vector3 endPoint = new Vector3(offsetOrigin.x, offsetOrigin.y, offsetOrigin.z + _meleeAttackDistance);
+
+        if (Physics.Linecast(offsetOrigin, endPoint, out info))
+        {
+            var health = info.collider.gameObject.GetComponent<Health>();
+            if (health != null && WeaponAgentComponent.HasWeaponEquipped)
+            {
+                health.TakeDamage(WeaponAgentComponent.GetEquippedWeapon().Damage);
+            }
+        }
+    }
+
+    private void HideSelf()
+    {
         this.gameObject.SetActive(false);
+    }
+
+    private void SpellcastAnimationFinished(string spellName)
+    {
+        switch (spellName)
+        {
+            case SpellNames.FIREBALL:
+                break;
+
+            default:
+                throw new NotImplementedException();
+        }
     }
 
     private bool TryHandlePickup(GameObject obj)
@@ -75,20 +137,6 @@ public class CharacterManager : MonoBehaviour
                 default:
                     throw new NotImplementedException(String.Format("Unhandled pickup type: {0} for Characters", type.ToString()));
             }
-        }
-
-        return success;
-    }
-
-    private bool TryHandleDamage(GameObject obj)
-    {
-        var success = false;
-        var weapon = obj.GetComponent<Weapon>();
-
-        if (weapon != null)
-        {
-            success = true;
-            Health.TakeDamage(weapon.Damage);
         }
 
         return success;

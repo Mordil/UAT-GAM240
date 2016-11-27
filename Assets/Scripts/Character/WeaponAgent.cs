@@ -3,10 +3,13 @@ using System.Collections;
 
 public class WeaponAgent : MonoBehaviour
 {
-    public const string WEAPON_ANIMATION_INDEX = "Weapon Animation Index";
+    private const string WEAPON_ANIMATION_INDEX = "Weapon Animation Index";
+
+    public bool HasWeaponEquipped { get { return CurrentWeapon != null; } }
 
     [SerializeField]
     protected Weapon CurrentWeapon;
+
     [SerializeField]
     protected Animator AnimatorComponent;
     [SerializeField]
@@ -47,10 +50,17 @@ public class WeaponAgent : MonoBehaviour
         var newWeapon = Instantiate(prefab) as GameObject;
 
         newWeapon.transform.SetParent(AttachmentPoint);
-        newWeapon.transform.localPosition = prefab.transform.localPosition;
-        newWeapon.transform.localRotation = prefab.transform.localRotation;
+        newWeapon.transform.localPosition = AttachmentPoint.transform.localPosition;
+        newWeapon.transform.localRotation = AttachmentPoint.transform.localRotation;
 
         CurrentWeapon = newWeapon.GetComponent<Weapon>();
+        CurrentWeapon.SetOwner(GetComponent<CharacterManager>());
+
         AnimatorComponent.SetInteger(WEAPON_ANIMATION_INDEX, (int)CurrentWeapon.Animation);
+    }
+
+    public Weapon GetEquippedWeapon()
+    {
+        return CurrentWeapon;
     }
 }

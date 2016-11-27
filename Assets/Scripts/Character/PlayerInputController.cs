@@ -5,15 +5,19 @@ public class PlayerInputController : MonoBehaviour
 {
     private struct AnimationParameters
     {
-        public const string JUMP = "Jump";
+        public const string JUMP_TRIGGER = "Jump";
         public const string VERTICAL = "Vertical";
         public const string HORIZONTAL = "Horizontal";
+        public const string NORMAL_ATTACK_TRIGGER = "Normal Attack";
     }
 
     [SerializeField]
     private float _movementSpeed = 4f;
     [SerializeField]
     private float _rotationSpeed = 25f;
+
+    [SerializeField]
+    private CharacterManager _characterManager;
 
     [SerializeField]
     private Animator _animator;
@@ -24,15 +28,21 @@ public class PlayerInputController : MonoBehaviour
         {
             _animator = GetComponent<Animator>();
         }
+
+        if (_characterManager == null)
+        {
+            _characterManager = GetComponent<CharacterManager>();
+        }
     }
 
     private void Update()
     {
-        UpdatePosition();
-        UpdateRotation();
+        HandlePositionInput();
+        HandleRotationInput();
+        HandleActions();
     }
 
-    private void UpdatePosition()
+    private void HandlePositionInput()
     {
         Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
@@ -45,11 +55,11 @@ public class PlayerInputController : MonoBehaviour
 
         if (didJump && input.z >= 0 && input.x == 0)
         {
-            _animator.SetTrigger(AnimationParameters.JUMP);
+            _animator.SetTrigger(AnimationParameters.JUMP_TRIGGER);
         }
     }
 
-    private void UpdateRotation()
+    private void HandleRotationInput()
     {
         float angle = Input.GetAxis("Mouse X") * _rotationSpeed;
         // Maintain current "up" position, to rotate horizontally.
@@ -57,5 +67,14 @@ public class PlayerInputController : MonoBehaviour
 
         // apply the rotation
         transform.Rotate(rotateVector, Space.World);
+    }
+
+    private void HandleActions()
+    {
+        if (Input.GetKeyUp(KeyCode.F) &&
+            _characterManager.WeaponAgentComponent.HasWeaponEquipped)
+        {
+            _animator.SetTrigger(AnimationParameters.NORMAL_ATTACK_TRIGGER);
+        }
     }
 }
