@@ -34,12 +34,28 @@ public class Weapon : MonoBehaviour
     public CharacterManager Owner { get { return _owner; } }
 
     [SerializeField]
-    private Transform _iKTarget;
+    private Transform _weaponVisual;
     /// <summary>
     /// The reference point IK limbs should attach to.
     /// </summary>
     /// <seealso cref="Transform"/>
-    public Transform IKTarget { get { return _iKTarget; } }
+    public Transform WeaponVisual { get { return _weaponVisual; } }
+    [SerializeField]
+    [Tooltip("The ideal local rotation of the visual when equipped.")]
+    private Vector3 _desiredLocalRotation;
+    /// <summary>
+    /// The ideal local rotation of the visual when equipped.
+    /// </summary>
+    public Vector3 DesiredLocalRotation { get { return _desiredLocalRotation; } }
+
+    private void Awake()
+    {
+        if (_weaponVisual == null)
+        {
+            // grab the component from the first child
+            _weaponVisual = this.gameObject.GetComponentsInChildren<Transform>()[1];
+        }
+    }
 
     /// <summary>
     /// Sets the owner of this weapon.
