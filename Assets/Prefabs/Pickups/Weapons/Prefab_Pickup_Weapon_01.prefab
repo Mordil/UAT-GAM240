@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 3
-  _animation: 1
+  _animationStyle: 1
   _owner: {fileID: 0}
   _iKTarget: {fileID: 4000013102157102}
 --- !u!136 &136000011947953132

@@ -212,8 +212,8 @@ ModelImporter:
       - time: 0.4112426
         functionName: MeleeAttackHitCheck
         data: 
-        objectReferenceParameter: {fileID: 1000014003159492, guid: 43ffde9340e3f5f47bd3f64944a50ff6,
-          type: 2}
+        objectReferenceParameter: {fileID: 11500000, guid: 245fdb0ad26822841997c9e2880e4e1b,
+          type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0

@@ -1,20 +1,28 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿using System;
+using UnityEngine;
 
-public class CharacterManager : MonoBehaviour
+/// <summary>
+/// Master class that manages behaviours for Characters.
+/// </summary>
+/// <seealso cref="IMeleeAttackAnimationHandler"/>
+public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
 {
-    private const string DEATH_ANIMATION_TRIGGER = "Has Died";
-
     [SerializeField]
     private Health _healthComponent;
+    /// <summary>
+    /// The <see cref="Health"/> (if one exists) attached to the GameObject.
+    /// </summary>
     public Health Health { get { return _healthComponent; } }
 
     [SerializeField]
     private WeaponAgent _weaponAgent;
+    /// <summary>
+    /// The <see cref="WeaponAgent"/> (if one exists) attached to the GameObject.
+    /// </summary>
     public WeaponAgent WeaponAgentComponent { get { return _weaponAgent; } }
 
     [SerializeField]
+    [Tooltip("The max distance an object can be in front of this character and still be hit by melee attacks.")]
     private float _meleeAttackDistance = 2f;
 
     [SerializeField]
@@ -44,15 +52,18 @@ public class CharacterManager : MonoBehaviour
     /// <summary>
     /// Unity event callback when a trigger has collided with this object.
     /// </summary>
-    /// <param name="otherObj">The object collided with.</param>
+    /// <param name="otherObj">The <see cref="Collider"/> collided with.</param>
     protected void OnTriggerEnter(Collider otherObj)
     {
         GameObject colliderObj = otherObj.gameObject;
+
+        // try handling each discrete case for collision
 
         if (!TryHandlePickup(colliderObj))
         {
             if (!TryHandleSpell(colliderObj))
             {
+                // this is explicitly here for clarity
                 return;
             }
         }
@@ -63,7 +74,8 @@ public class CharacterManager : MonoBehaviour
     /// </summary>
     public void Kill()
     {
-        _animator.SetTrigger(DEATH_ANIMATION_TRIGGER);
+        // Play the animation, disable collision, and schedule invoking the method that will disable this gameobject.
+        _animator.SetTrigger(AnimationParameters.Arissa.Triggers.DEATH_ANIMATION);
         Invoke("HideSelf", 3);
 
         var rigidbody = GetComponent<Rigidbody>();
@@ -79,15 +91,26 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
-    private void MeleeAttackHitCheck()
+    /// <summary>
+    /// Checks if the character has hit a damageable object and deals necessary damage.
+    /// </summary>
+    /// <seealso cref="IMeleeAttackAnimationHandler.MeleeAttackHitCheck"/>
+    public void MeleeAttackHitCheck()
     {
         RaycastHit info;
+
+        // get the origin as the "center", as the origin is down near the feet
         Vector3 offsetOrigin = transform.position + transform.up;
+        // get the end position by adding just the max distance to the forward
         Vector3 endPoint = new Vector3(offsetOrigin.x, offsetOrigin.y, offsetOrigin.z + _meleeAttackDistance);
 
+        // do a linecast to see if anything is between us, rather than AT the point casted to
         if (Physics.Linecast(offsetOrigin, endPoint, out info))
         {
+            // we hit something, so try to grab a health component
             var health = info.collider.gameObject.GetComponent<Health>();
+
+            // if it has one, and the character has a weapon equipped, get the damage of the weapon and apply it
             if (health != null && WeaponAgentComponent.HasWeaponEquipped)
             {
                 health.TakeDamage(WeaponAgentComponent.GetEquippedWeapon().Damage);
@@ -104,14 +127,16 @@ public class CharacterManager : MonoBehaviour
     {
         var success = false;
         var pickup = obj.GetComponent<BasePickup>();
-
+        
         if (pickup != null)
         {
-            pickup.OnPickup(this);
-            BasePickup.PickupType type = pickup.Type;
+            // since the collided object was a pickup, we'll want to return true
             success = true;
 
-            switch (type)
+            // call its OnPickup so it handles its logic while we move on to other logic
+            pickup.OnPickup(this);
+
+            switch (pickup.Type)
             {
                 case BasePickup.PickupType.Weapon:
                     WeaponAgentComponent.HandleNewWeapon(pickup.As<WeaponPickup>());
@@ -121,7 +146,7 @@ public class CharacterManager : MonoBehaviour
                     break;
 
                 default:
-                    throw new NotImplementedException(String.Format("Unhandled pickup type: {0} for Characters", type.ToString()));
+                    throw new NotImplementedException(String.Format("Unhandled pickup type: {0} for Characters", pickup.Type.ToString()));
             }
         }
 
@@ -132,21 +157,27 @@ public class CharacterManager : MonoBehaviour
     {
         var success = false;
         var spell = obj.GetComponentInParent<SpellBase>();
-        var spellCollider = obj.GetComponent<DigitalRuby.PyroParticles.FireCollisionForwardScript>();
 
-        if (spell != null &&
-            spellCollider != null &&
-            spellCollider.Spawner != this.gameObject)
+        if (spell != null)
         {
+            // since the collided object was a spell, we'll want to return true
+            success = true;
+
             switch (spell.Type)
             {
                 case SpellBase.EffectType.Damage:
-                    Health.TakeDamage(spell.As<DamageSpell>().Damage);
-                    success = true;
+                    // only handle damage spell collisions if the spell did not come from us
+                    var spellCollider = obj.GetComponent<DigitalRuby.PyroParticles.FireCollisionForwardScript>();
+
+                    if (spellCollider != null &&
+                        spellCollider.Spawner != this.gameObject)
+                    {
+                        Health.TakeDamage(spell.As<DamageSpell>().Damage);
+                    }
                     break;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException(String.Format("Unhandled spell type: {0} for Characters", spell.Type.ToString()));
             }
         }
 

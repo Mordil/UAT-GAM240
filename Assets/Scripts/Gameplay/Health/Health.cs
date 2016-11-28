@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Class that handles health for objects.
+/// </summary>
 public class Health : MonoBehaviour
 {
     private const int DEFAULT_MAX_HEALTH = 10;
@@ -21,16 +24,19 @@ public class Health : MonoBehaviour
     /// <summary>
     /// Raised when the object is killed.
     /// </summary>
+    /// <seealso cref="UnityEvent"/>
     [Tooltip("Raised when the object is killed.")]
     public UnityEvent OnKilled;
     /// <summary>
     /// Raised each time the object loses health.
     /// </summary>
+    /// <seealso cref="UnityEvent"/>
     [Tooltip("Raised each time the object loses health.")]
     public UnityEvent OnHealthLost;
     /// <summary>
     /// Raised each time the object gains health.
     /// </summary>
+    /// <seealso cref="UnityEvent"/>
     [Tooltip("Raised each time the object gains health.")]
     public UnityEvent OnHealthGained;
 

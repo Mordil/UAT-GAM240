@@ -210,9 +210,9 @@ ModelImporter:
       curves: []
       events:
       - time: 0.26963907
-        functionName: SpellcastAnimationFinished
+        functionName: SpawnSpell
         data: fireball
-        objectReferenceParameter: {fileID: 11500000, guid: fc1157c6e510d6c45b6a17cd7de0abe5,
+        objectReferenceParameter: {fileID: 11500000, guid: 245fdb0ad26822841997c9e2880e4e1b,
           type: 3}
         floatParameter: 0
         intParameter: 0

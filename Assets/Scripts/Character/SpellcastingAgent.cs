@@ -1,20 +1,20 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿using System;
+using UnityEngine;
 
-public class SpellcastingAgent : MonoBehaviour
+/// <summary>
+/// Master class that manages spellcasting and spells for Characters.
+/// </summary>
+/// <seealso cref="ISpellcastingAnimationHandler"/>
+public class SpellcastingAgent : MonoBehaviour, ISpellcastingAnimationHandler
 {
-    public struct SpellNames
-    {
-        public const string FIREBALL = "fireball";
-    }
-
     [SerializeField]
     private WeaponAgent _weaponAgent;
 
     [SerializeField]
+    [Tooltip("The position spells should be spawned at when the character is unarmed.")]
     private Transform _unarmedSpawnPosition;
     [SerializeField]
+    [Tooltip("The position spells should be spawned at when the character is armed.")]
     private Transform _armedSpawnPosition;
 
     [SerializeField]
@@ -27,11 +27,18 @@ public class SpellcastingAgent : MonoBehaviour
             _weaponAgent = GetComponent<WeaponAgent>();
         }
     }
-
-    private void SpellcastAnimationFinished(string spellName)
+    
+    /// <summary>
+    /// Instantiates the prefab for the provided spell.
+    /// </summary>
+    /// <param name="spellName">The name of the spell to instantiate.</param>
+    /// <seealso cref="ISpellcastingAnimationHandler.SpellcastAnimationFinished(string)"/>
+    public void SpawnSpell(string spellName)
     {
+        // get the position based on the character being armed/unarmed
         Transform spawnPosition = GetSpawnPosition();
 
+        // instantiate and do necessary logic for the matching spell
         switch (spellName)
         {
             case SpellNames.FIREBALL:

@@ -1,17 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Handles player input and carries commands to other components.
+/// </summary>
 public class PlayerInputController : MonoBehaviour
 {
-    private struct AnimationParameters
-    {
-        public const string JUMP_TRIGGER = "Jump";
-        public const string VERTICAL = "Vertical";
-        public const string HORIZONTAL = "Horizontal";
-        public const string NORMAL_ATTACK_TRIGGER = "Normal Attack";
-        public const string SPELLCAST_FIREBALL_TRIGGER = "Spellcast Fireball";
-    }
-
     [SerializeField]
     private float _movementSpeed = 4f;
     [SerializeField]
@@ -51,14 +44,14 @@ public class PlayerInputController : MonoBehaviour
 
         input = Vector3.ClampMagnitude(input, 1f) * _movementSpeed;
 
-        _animator.SetFloat(AnimationParameters.HORIZONTAL, input.x);
-        _animator.SetFloat(AnimationParameters.VERTICAL, input.z);
+        _animator.SetFloat(AnimationParameters.Arissa.Floats.HORIZONTAL, input.x);
+        _animator.SetFloat(AnimationParameters.Arissa.Floats.VERTICAL, input.z);
 
         bool didJump = Input.GetKeyUp(KeyCode.Space);
 
         if (didJump && input.z >= 0 && input.x == 0)
         {
-            _animator.SetTrigger(AnimationParameters.JUMP_TRIGGER);
+            _animator.SetTrigger(AnimationParameters.Arissa.Triggers.JUMP);
         }
     }
 
@@ -77,10 +70,11 @@ public class PlayerInputController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.F) &&
             _characterManager.WeaponAgentComponent.HasWeaponEquipped)
         {
-            _animator.SetTrigger(AnimationParameters.NORMAL_ATTACK_TRIGGER);
-        } else if (Input.GetKeyUp(KeyCode.R))
+            _animator.SetTrigger(AnimationParameters.Arissa.Triggers.MeleeAttacks.NORMAL);
+        }
+        else if (Input.GetKeyUp(KeyCode.R))
         {
-            _animator.SetTrigger(AnimationParameters.SPELLCAST_FIREBALL_TRIGGER);
+            _animator.SetTrigger(AnimationParameters.Arissa.Triggers.Spellcasting.FIREBALL);
         }
     }
 }
