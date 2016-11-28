@@ -66,7 +66,7 @@ namespace DigitalRuby.PyroParticles
             StartCoroutine(SendCollisionAfterDelay());
         }
 
-        public void HandleCollision(GameObject obj, Collision c)
+        public void HandleCollision(GameObject obj, Collider c)
         {
             if (collided)
             {
@@ -93,17 +93,8 @@ namespace DigitalRuby.PyroParticles
                 ProjectileCollisionSound.Play();
             }
 
-            // if we have contacts, play the collision particle system and call the delegate
-            if (c.contacts.Length != 0)
-            {
-                ProjectileExplosionParticleSystem.transform.position = c.contacts[0].point;
-                ProjectileExplosionParticleSystem.Play();
-                FireBaseScript.CreateExplosion(c.contacts[0].point, ProjectileExplosionRadius, ProjectileExplosionForce);
-                if (CollisionDelegate != null)
-                {
-                    CollisionDelegate(this, c.contacts[0].point);
-                }
-            }
+            ProjectileExplosionParticleSystem.transform.position = c.transform.position + Vector3.up;
+            ProjectileExplosionParticleSystem.Play();
         }
     }
 }

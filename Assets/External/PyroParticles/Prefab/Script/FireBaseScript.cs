@@ -77,7 +77,7 @@ namespace DigitalRuby.PyroParticles
         protected virtual void Awake()
         {
             Starting = true;
-            int fireLayer = UnityEngine.LayerMask.NameToLayer("FireLayer");
+            int fireLayer = UnityEngine.LayerMask.NameToLayer("SpellEffects");
             UnityEngine.Physics.IgnoreLayerCollision(fireLayer, fireLayer);
         }
 

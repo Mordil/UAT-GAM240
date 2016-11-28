@@ -5,7 +5,7 @@ namespace DigitalRuby.PyroParticles
 {
     public interface ICollisionHandler
     {
-        void HandleCollision(GameObject obj, Collision c);
+        void HandleCollision(GameObject obj, Collider c);
     }
 
     /// <summary>
@@ -18,7 +18,7 @@ namespace DigitalRuby.PyroParticles
     {
         public ICollisionHandler CollisionHandler;
 
-        public void OnCollisionEnter(Collision col)
+        public void OnTriggerEnter(Collider col)
         {
             CollisionHandler.HandleCollision(gameObject, col);
         }

@@ -9,6 +9,7 @@ public class PlayerInputController : MonoBehaviour
         public const string VERTICAL = "Vertical";
         public const string HORIZONTAL = "Horizontal";
         public const string NORMAL_ATTACK_TRIGGER = "Normal Attack";
+        public const string SPELLCAST_FIREBALL_TRIGGER = "Spellcast Fireball";
     }
 
     [SerializeField]
@@ -18,6 +19,8 @@ public class PlayerInputController : MonoBehaviour
 
     [SerializeField]
     private CharacterManager _characterManager;
+    [SerializeField]
+    private SpellcastingAgent _spellcastingAgent;
 
     [SerializeField]
     private Animator _animator;
@@ -75,6 +78,9 @@ public class PlayerInputController : MonoBehaviour
             _characterManager.WeaponAgentComponent.HasWeaponEquipped)
         {
             _animator.SetTrigger(AnimationParameters.NORMAL_ATTACK_TRIGGER);
+        } else if (Input.GetKeyUp(KeyCode.R))
+        {
+            _animator.SetTrigger(AnimationParameters.SPELLCAST_FIREBALL_TRIGGER);
         }
     }
 }

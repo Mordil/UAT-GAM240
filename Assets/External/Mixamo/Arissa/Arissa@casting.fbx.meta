@@ -212,7 +212,7 @@ ModelImporter:
       - time: 0.36305732
         functionName: SpellcastAnimationFinished
         data: fireball
-        objectReferenceParameter: {fileID: 11500000, guid: 93c4cbb593f47bd4da5a1b02f2f68e47,
+        objectReferenceParameter: {fileID: 11500000, guid: fc1157c6e510d6c45b6a17cd7de0abe5,
           type: 3}
         floatParameter: 0
         intParameter: 0

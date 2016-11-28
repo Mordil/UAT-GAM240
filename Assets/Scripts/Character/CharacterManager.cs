@@ -4,11 +4,6 @@ using System;
 
 public class CharacterManager : MonoBehaviour
 {
-    private struct SpellNames
-    {
-        public const string FIREBALL = "fireball";
-    }
-
     private const string DEATH_ANIMATION_TRIGGER = "Has Died";
 
     [SerializeField]
@@ -100,18 +95,6 @@ public class CharacterManager : MonoBehaviour
     private void HideSelf()
     {
         this.gameObject.SetActive(false);
-    }
-
-    private void SpellcastAnimationFinished(string spellName)
-    {
-        switch (spellName)
-        {
-            case SpellNames.FIREBALL:
-                break;
-
-            default:
-                throw new NotImplementedException();
-        }
     }
 
     private bool TryHandlePickup(GameObject obj)
