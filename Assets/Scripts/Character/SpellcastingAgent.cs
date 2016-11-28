@@ -35,8 +35,9 @@ public class SpellcastingAgent : MonoBehaviour
         switch (spellName)
         {
             case SpellNames.FIREBALL:
-                Debug.Log("buzz");
-                Instantiate(_fireballPrefab, spawnPosition.position, _fireballPrefab.transform.rotation);
+                var collisionScript = (Instantiate(_fireballPrefab, spawnPosition.position, _fireballPrefab.transform.rotation) as GameObject)
+                    .GetComponentInChildren<DigitalRuby.PyroParticles.FireCollisionForwardScript>();
+                collisionScript.Spawner = this.gameObject;
                 break;
 
             default:

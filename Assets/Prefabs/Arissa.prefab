@@ -1189,6 +1189,7 @@ GameObject:
   - 114: {fileID: 114000012662905280}
   - 114: {fileID: 114000013213714784}
   - 114: {fileID: 114000013529060000}
+  - 114: {fileID: 114000013616606592}
   m_Layer: 0
   m_Name: Arissa
   m_TagString: Untagged
@@ -2567,6 +2568,7 @@ MonoBehaviour:
   _healthComponent: {fileID: 0}
   _weaponAgent: {fileID: 0}
   _meleeAttackDistance: 2
+  _animator: {fileID: 0}
 --- !u!114 &114000013520017598
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2581,6 +2583,7 @@ MonoBehaviour:
   _movementSpeed: 4
   _rotationSpeed: 25
   _characterManager: {fileID: 0}
+  _spellcastingAgent: {fileID: 0}
   _animator: {fileID: 95000011837294798}
 --- !u!114 &114000013529060000
 MonoBehaviour:
@@ -2596,6 +2599,22 @@ MonoBehaviour:
   CurrentWeapon: {fileID: 0}
   AnimatorComponent: {fileID: 0}
   AttachmentPoint: {fileID: 4000010153943664}
+--- !u!114 &114000013616606592
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014003159492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1157c6e510d6c45b6a17cd7de0abe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponAgent: {fileID: 0}
+  _unarmedSpawnPosition: {fileID: 4000010153943664}
+  _armedSpawnPosition: {fileID: 4000013572084830}
+  _fireballPrefab: {fileID: 1000010606369040, guid: 0e4d148611e935548a7652d7a8e3d958,
+    type: 2}
 --- !u!124 &124000011927437170
 Behaviour:
   m_ObjectHideFlags: 1

@@ -18,9 +18,14 @@ namespace DigitalRuby.PyroParticles
     {
         public ICollisionHandler CollisionHandler;
 
+        public GameObject Spawner { get; set; }
+
         public void OnTriggerEnter(Collider col)
         {
-            CollisionHandler.HandleCollision(gameObject, col);
+            if (col.gameObject != Spawner)
+            {
+                CollisionHandler.HandleCollision(gameObject, col);
+            }
         }
     }
 }

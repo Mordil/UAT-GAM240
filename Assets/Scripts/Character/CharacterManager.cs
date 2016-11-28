@@ -51,7 +51,10 @@ public class CharacterManager : MonoBehaviour
 
         if (!TryHandlePickup(colliderObj))
         {
-            return;
+            if (!TryHandleSpell(colliderObj))
+            {
+                return;
+            }
         }
     }
 
@@ -119,6 +122,31 @@ public class CharacterManager : MonoBehaviour
 
                 default:
                     throw new NotImplementedException(String.Format("Unhandled pickup type: {0} for Characters", type.ToString()));
+            }
+        }
+
+        return success;
+    }
+
+    private bool TryHandleSpell(GameObject obj)
+    {
+        var success = false;
+        var spell = obj.GetComponentInParent<SpellBase>();
+        var spellCollider = obj.GetComponent<DigitalRuby.PyroParticles.FireCollisionForwardScript>();
+
+        if (spell != null &&
+            spellCollider != null &&
+            spellCollider.Spawner != this.gameObject)
+        {
+            switch (spell.Type)
+            {
+                case SpellBase.EffectType.Damage:
+                    Health.TakeDamage(spell.As<DamageSpell>().Damage);
+                    success = true;
+                    break;
+
+                default:
+                    throw new NotImplementedException();
             }
         }
 
