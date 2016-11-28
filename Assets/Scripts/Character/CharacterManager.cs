@@ -120,7 +120,7 @@ public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
 
     private void HideSelf()
     {
-        this.gameObject.SetActive(false);
+        Destroy(this.gameObject);
     }
 
     private bool TryHandlePickup(GameObject obj)
