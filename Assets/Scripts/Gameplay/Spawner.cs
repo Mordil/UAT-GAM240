@@ -9,12 +9,25 @@ public class Spawner : MonoBehaviour
     private float _spawnDelay = 3f;
     private float _timeToSpawnTimer;
 
+    [Header("Spawn Settings")]
+
     [SerializeField]
     private Vector3 _offset;
     [SerializeField]
     private GameObject _prefabToSpawn;
     [SerializeField]
     private GameObject _spawnedInstance;
+    
+    [Header("Gizmo Settings")]
+
+    [Range(0, 1)]
+    [SerializeField]
+    private float _opacity = .5f;
+
+    [SerializeField]
+    private Color _gizmoColor = Color.blue;
+    [SerializeField]
+    private Vector3 _scale;
 
     private void Awake()
     {
@@ -39,6 +52,15 @@ public class Spawner : MonoBehaviour
         {
             SpawnPrefab();
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
+        Gizmos.color = Color.Lerp(_gizmoColor, Color.clear, _opacity);
+        Gizmos.DrawCube(Vector3.up * _scale.y / 2f, _scale);
+        Gizmos.color = _gizmoColor;
+        Gizmos.DrawRay(Vector3.zero, Vector3.forward * .4f);
     }
 
     private void SpawnPrefab()

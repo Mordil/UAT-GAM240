@@ -494,8 +494,9 @@ GameObject:
   - 114: {fileID: 114000010803085032}
   - 195: {fileID: 195000013760487150}
   - 114: {fileID: 114000012948145624}
+  - 114: {fileID: 114000013095247094}
   m_Layer: 0
-  m_Name: TargetDummy
+  m_Name: TargetDummy_Spells
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2525,6 +2526,22 @@ MonoBehaviour:
   _canCastSpells: 1
   _maxDistance: 10
   _spellcastingAgent: {fileID: 0}
+--- !u!114 &114000013095247094
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011701599950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1157c6e510d6c45b6a17cd7de0abe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponAgent: {fileID: 0}
+  _unarmedSpawnPosition: {fileID: 4000013580429802}
+  _armedSpawnPosition: {fileID: 0}
+  _fireballPrefab: {fileID: 1000010606369040, guid: 0e4d148611e935548a7652d7a8e3d958,
+    type: 2}
 --- !u!136 &136000011529047692
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -2836,7 +2853,7 @@ NavMeshAgent:
   m_Acceleration: 2
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 2
+  m_StoppingDistance: 10
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
