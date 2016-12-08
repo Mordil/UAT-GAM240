@@ -3,7 +3,7 @@
 /// <summary>
 /// Handles player input and carries commands to other components.
 /// </summary>
-public class PlayerInputController : MonoBehaviour
+public class PlayerInputController : MonoBehaviour, IInputController
 {
     [SerializeField]
     private float _movementSpeed = 4f;

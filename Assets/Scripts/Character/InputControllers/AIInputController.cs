@@ -2,9 +2,11 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class AIInputController : MonoBehaviour
+public class AIInputController : MonoBehaviour, IInputController
 {
     private const float OFF_MESH_LINK_MOVEMENT_CLOSE_ENOUGH_CONSTANT = .04f;
+
+    public Transform Target { get { return _targetTransform; } }
 
     [Header("Components")]
     [SerializeField]
@@ -66,9 +68,15 @@ public class AIInputController : MonoBehaviour
 
     private void Update()
     {
+        if (_targetTransform == null)
+        {
+            this.enabled = false;
+            return;
+        }
+
         if (_canCastSpells && _spellcastingAgent)
         {
-            if (_navMeshAgent.remainingDistance <= _maxDistance)
+            if (_navMeshAgent.hasPath && _navMeshAgent.remainingDistance <= _maxDistance)
             {
                 _animator.SetTrigger(AnimationParameters.Arissa.Triggers.Spellcasting.FIREBALL);
             }
@@ -166,6 +174,5 @@ public class AIInputController : MonoBehaviour
         _navMeshAgent.Resume();
 
         _offMeshLinkCoroutine = null;
-        StopCoroutine(_offMeshLinkCoroutine);
     }
 }
