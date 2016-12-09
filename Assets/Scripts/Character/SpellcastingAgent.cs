@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Master class that manages spellcasting and spells for Characters.
@@ -7,6 +8,8 @@ using UnityEngine;
 /// <seealso cref="ISpellcastingAnimationHandler"/>
 public class SpellcastingAgent : MonoBehaviour, ISpellcastingAnimationHandler
 {
+    public UnityEvent<string> OnSpellCast;
+
     private IInputController _inputController;
 
     [SerializeField]
@@ -49,20 +52,24 @@ public class SpellcastingAgent : MonoBehaviour, ISpellcastingAnimationHandler
             default:
                 throw new NotImplementedException();
         }
+
+        OnSpellCast.Invoke(spellName);
     }
 
     private void SpawnFireball()
     {
         // get the position based on the character being armed/unarmed
         Transform spawnPosition = GetSpawnPosition();
+        Quaternion spawnRotation = gameObject.transform.rotation;
 
         var controller = _inputController as AIInputController;
-        if (controller != null)
+        if (controller != null && controller.Target != null)
         {
-            spawnPosition.LookAt(controller.Target);
+            spawnPosition.LookAt(controller.Target.position + new Vector3(0, 1.25f, 0));
+            spawnRotation = spawnPosition.rotation;
         }
 
-        var collisionScript = (Instantiate(_fireballPrefab, spawnPosition.position, spawnPosition.rotation) as GameObject)
+        var collisionScript = (Instantiate(_fireballPrefab, spawnPosition.position, spawnRotation) as GameObject)
             .GetComponentInChildren<DigitalRuby.PyroParticles.FireCollisionForwardScript>();
         collisionScript.Spawner = this.gameObject;
     }

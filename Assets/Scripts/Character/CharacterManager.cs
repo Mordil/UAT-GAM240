@@ -89,6 +89,12 @@ public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
         {
             collider.enabled = false;
         }
+
+        var camera = GetComponentInChildren<Camera>();
+        if (camera != null)
+        {
+            camera.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>

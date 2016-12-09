@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using L4.Unity.Common;
+using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -27,9 +29,14 @@ public class AIInputController : MonoBehaviour, IInputController
     [SerializeField]
     [Tooltip("Can the AI cast spells at a target?")]
     private bool _canCastSpells = true;
+    private bool _isCastingASpell;
 
     [SerializeField]
     private float _maxDistance = 10f;
+    [SerializeField]
+    [Range(0, 5)]
+    private float _spellcastingDelay;
+    private float _spellcastingTimer;
 
     [SerializeField]
     private SpellcastingAgent _spellcastingAgent;
@@ -63,7 +70,14 @@ public class AIInputController : MonoBehaviour, IInputController
             _spellcastingAgent = GetComponent<SpellcastingAgent>();
         }
 
+        _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
+
+        _targetTransform.gameObject.GetComponent<Health>().OnKilled.AddListener(() => {
+            _canCastSpells = false;
+        });
         GetComponentInChildren<Health>().OnKilled.AddListener(() => { _navMeshAgent.enabled = false; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 0; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 1; });
     }
 
     private void Update()
@@ -74,11 +88,22 @@ public class AIInputController : MonoBehaviour, IInputController
             return;
         }
 
-        if (_canCastSpells && _spellcastingAgent)
+        if (_canCastSpells && !_isCastingASpell &&
+            _spellcastingAgent != null && _targetTransform != null)
         {
-            if (_navMeshAgent.hasPath && _navMeshAgent.remainingDistance <= _maxDistance)
+            if (_spellcastingTimer >= _spellcastingDelay)
             {
-                _animator.SetTrigger(AnimationParameters.Arissa.Triggers.Spellcasting.FIREBALL);
+                _spellcastingTimer = 0;
+
+                if (_navMeshAgent.hasPath && _navMeshAgent.remainingDistance <= _maxDistance)
+                {
+                    _isCastingASpell = true;
+                    _animator.SetTrigger(AnimationParameters.Arissa.Triggers.Spellcasting.FIREBALL);
+                }
+            }
+            else
+            {
+                _spellcastingTimer += Time.deltaTime;
             }
         }
     }

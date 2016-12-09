@@ -78,7 +78,7 @@ AnimatorController:
   - serializedVersion: 5
     m_Name: Spells
     m_StateMachine: {fileID: 1107000013699084442}
-    m_Mask: {fileID: 0}
+    m_Mask: {fileID: 101100000, guid: 0f62e57e09adef240a71ef64bae788a0, type: 2}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
