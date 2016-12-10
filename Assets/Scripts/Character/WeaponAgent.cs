@@ -1,14 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Class that handles <seealso cref="Weapon"/> instances for characters.
 /// </summary>
 public class WeaponAgent : MonoBehaviour
 {
+    [Serializable]
+    public class WeaponEvent : UnityEvent<Weapon> { }
+
     /// <summary>
     /// Returns true if there is a reference to a Weapon found.
     /// </summary>
     public bool HasWeaponEquipped { get { return CurrentWeapon != null; } }
+
+    public WeaponEvent OnEquippedWeapon;
 
     /// <summary>
     /// The current Weapon equipped by the character.
@@ -74,6 +81,7 @@ public class WeaponAgent : MonoBehaviour
 
         // Update the animation index
         AnimatorComponent.SetInteger(AnimationParameters.Arissa.Integers.WEAPON_ANIMATION, (int)CurrentWeapon.AnimationStyle);
+        OnEquippedWeapon.Invoke(CurrentWeapon);
     }
 
     /// <summary>

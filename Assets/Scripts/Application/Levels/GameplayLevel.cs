@@ -86,6 +86,6 @@ public class GameplayLevel : SceneBase
 
         var player = Instantiate(_playerPrefab, _playerSpawner.position, _playerSpawner.rotation) as GameObject;
         _player = player.GetComponent<CharacterManager>();
-        player.GetComponent<Health>().OnKilled.AddListener(() => { PlayerDied(); });
+        player.GetComponent<Health>().OnKilled.AddListener(PlayerDied);
     }
 }

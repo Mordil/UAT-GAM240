@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour
 {
-    private int _healthCache;
     private GameplayLevel _level;
 
     [Header("HUD Canvases")]
@@ -21,6 +20,10 @@ public class HUDManager : MonoBehaviour
     private Text _textComponent;
     [SerializeField]
     private Slider _healthSlider;
+
+    [Header("Equipment")]
+    [SerializeField]
+    private Image _equippedWeaponImage;
 
     private void Awake()
     {
@@ -47,17 +50,20 @@ public class HUDManager : MonoBehaviour
             }
 
             _healthComponent.OnKilled.AddListener(() => {  this.gameObject.SetActive(false); });
+            _healthComponent.OnHealthGained.AddListener(UpdateHealth);
+            _healthComponent.OnHealthLost.AddListener(UpdateHealth);
         }
 
         if (_healthSlider == null)
         {
             _healthSlider = GetComponentInChildren<Slider>();
         }
-    }
 
-    private void Update()
-    {
-        HealthUpdate();
+        var weaponAgent = GetComponentInParent<WeaponAgent>();
+        if (weaponAgent != null)
+        {
+            weaponAgent.OnEquippedWeapon.AddListener((newWeapon) => { _equippedWeaponImage.gameObject.SetActive(true); });
+        }
     }
 
     public void ResumeButtonClicked()
@@ -65,22 +71,16 @@ public class HUDManager : MonoBehaviour
         _level.Resume();
     }
 
-    private void HealthUpdate()
+    private void UpdateHealth()
     {
-        int health = _healthComponent.CurrentHealth;
-        if (health != _healthCache)
-        {
-            _healthCache = health;
+        var healthPercentage = _healthComponent.CurrentHealthPercentage;
 
-            var healthPercentage = _healthComponent.CurrentHealthPercentage;
+        _textComponent.text = string.Format(
+            "{0} / {1} ({2}%)",
+            _healthComponent.CurrentHealth,
+            _healthComponent.MaxHealth,
+            Mathf.RoundToInt(healthPercentage * 100f));
 
-            _textComponent.text = string.Format(
-                "{0} / {1} ({2}%)",
-                _healthComponent.CurrentHealth,
-                _healthComponent.MaxHealth,
-                Mathf.RoundToInt(healthPercentage * 100f));
-
-            _healthSlider.value = healthPercentage;
-        }
+        _healthSlider.value = healthPercentage;
     }
 }
