@@ -34,8 +34,6 @@ public class GameplayLevel : SceneBase
     private GameObject _deathElementsContainer;
     [SerializeField]
     private GameObject _enemyContainer;
-    [SerializeField]
-    private GameObject _pauseMenu;
 
     [Header("Player Settings")]
     [SerializeField]

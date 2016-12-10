@@ -21,9 +21,6 @@ public class PlayerInputController : MonoBehaviour, IInputController
     [SerializeField]
     private Animator _animator;
 
-    [SerializeField]
-    private Canvas _hudCanvas;
-
     private void Awake()
     {
         if (_animator == null)
@@ -42,14 +39,8 @@ public class PlayerInputController : MonoBehaviour, IInputController
         }
 
         _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
-        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => {
-            _hudCanvas.gameObject.SetActive(true);
-            _animator.speed = 0;
-        });
-        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => {
-            _hudCanvas.gameObject.SetActive(false);
-            _animator.speed = 1;
-        });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 0; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 1; });
     }
 
     private void Update()

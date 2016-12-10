@@ -49,11 +49,6 @@ public class AIInputController : MonoBehaviour, IInputController
             _navMeshAgent.updateRotation = true;
         }
 
-        if (_targetTransform == null)
-        {
-            _targetTransform = FindObjectOfType<PlayerInputController>().transform;
-        }
-
         if (_myTransform == null)
         {
             _myTransform = transform;
@@ -72,12 +67,18 @@ public class AIInputController : MonoBehaviour, IInputController
 
         _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
 
-        _targetTransform.gameObject.GetComponent<Health>().OnKilled.AddListener(() => {
-            _canCastSpells = false;
-        });
         GetComponentInChildren<Health>().OnKilled.AddListener(() => { _navMeshAgent.enabled = false; });
         GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 0; });
         GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 1; });
+    }
+
+    private void Start()
+    {
+        if (_targetTransform == null)
+        {
+            _targetTransform = FindObjectOfType<PlayerInputController>().gameObject.transform;
+        }
+        _targetTransform.gameObject.GetComponent<Health>().OnKilled.AddListener(() => { _canCastSpells = false; });
     }
 
     private void Update()
