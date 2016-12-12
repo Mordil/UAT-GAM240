@@ -1,8 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-using L4.Unity.Common;
+﻿using L4.Unity.Common;
+using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Component that manages the Player's HUD.
+/// </summary>
 public class HUDManager : MonoBehaviour
 {
     private GameplayLevel _level;
@@ -18,8 +20,6 @@ public class HUDManager : MonoBehaviour
     private Health _healthComponent;
     [SerializeField]
     private Text _textComponent;
-    [SerializeField]
-    private Slider _healthSlider;
 
     [Header("Equipment")]
     [SerializeField]
@@ -54,11 +54,6 @@ public class HUDManager : MonoBehaviour
             _healthComponent.OnHealthLost.AddListener(UpdateHealth);
         }
 
-        if (_healthSlider == null)
-        {
-            _healthSlider = GetComponentInChildren<Slider>();
-        }
-
         var weaponAgent = GetComponentInParent<WeaponAgent>();
         if (weaponAgent != null)
         {
@@ -66,21 +61,33 @@ public class HUDManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        UpdateHealth();
+    }
+
+    /// <summary>
+    /// Button click callback for resuming the game from the pause menu.
+    /// </summary>
     public void ResumeButtonClicked()
     {
         _level.Resume();
     }
 
+    /// <summary>
+    /// Button click callback for quitting the current game and returning to the main menu from the pause menu.
+    /// </summary>
+    public void QuitButtonClicked()
+    {
+        GameManager.Instance.LoadLevel(ProjectSettings.Level.MainMenu);
+    }
+
     private void UpdateHealth()
     {
-        var healthPercentage = _healthComponent.CurrentHealthPercentage;
-
         _textComponent.text = string.Format(
             "{0} / {1} ({2}%)",
             _healthComponent.CurrentHealth,
             _healthComponent.MaxHealth,
-            Mathf.RoundToInt(healthPercentage * 100f));
-
-        _healthSlider.value = healthPercentage;
+            Mathf.RoundToInt(_healthComponent.CurrentHealthPercentage * 100f));
     }
 }

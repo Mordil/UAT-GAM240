@@ -1,14 +1,20 @@
-﻿using UnityEngine;
-using System.Collections;
-using L4.Unity.Common;
+﻿using L4.Unity.Common;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Manages the main gameplay level.
+/// </summary>
 public class GameplayLevel : SceneBase
 {
+    // This is unused for now. Will try implementing before turning in...
     private class LevelDefinition
     {
+        /// <summary>
+        /// Predefined level definitions.
+        /// </summary>
         public static LevelDefinition[] LevelDefinitions =
         {
             new LevelDefinition() { _numberOfMelee = 1 },
@@ -20,20 +26,40 @@ public class GameplayLevel : SceneBase
             new LevelDefinition() { _numberOfMelee = 2, _numberOfSpellcasters = 1 }
         };
 
+        /// <summary>
+        /// The number of spellcasters to spawn.
+        /// </summary>
         public int NumberOfSpellcasters { get { return _numberOfSpellcasters; } }
+        /// <summary>
+        /// The number of melee AI to spawn.
+        /// </summary>
         public int NumberOfMelee { get { return _numberOfMelee; } }
 
         private int _numberOfSpellcasters;
         private int _numberOfMelee;
     }
 
+    /// <summary>
+    /// Was the game won by the player?
+    /// </summary>
+    public bool GameWasWon { get; private set; }
+
+    /// <summary>
+    /// Event emitted when the level has been paused.
+    /// </summary>
     public UnityEvent OnLevelPaused;
+    /// <summary>
+    /// Event emitted when the level has been resumed.
+    /// </summary>
     public UnityEvent OnLevelResumed;
 
+    [Header("GameObject Containers")]
     [SerializeField]
-    private GameObject _deathElementsContainer;
+    private GameObject _gameOverScreen;
     [SerializeField]
     private GameObject _enemyContainer;
+    [SerializeField]
+    private GameObject _environmentContainer;
 
     [Header("Player Settings")]
     [SerializeField]
@@ -50,34 +76,74 @@ public class GameplayLevel : SceneBase
     protected override void Awake()
     {
         base.Awake();
-
-        if (_enemyContainer != null)
-        {
-            _enemyList = new List<GameObject>();
-            _enemyList = _enemyContainer
-                .GetComponentsInChildren<Transform>()
-                .Select(x => x.gameObject)
-                .ToList();
-        }
+        Time.timeScale = 1;
 
         StartLevel(_levelIndex);
     }
 
-    public void PlayerDied()
+    protected override void Start()
     {
-        _deathElementsContainer.SetActive(true);
+        _enemyList = new List<GameObject>();
+
+        _environmentContainer.GetComponentsInChildren<Spawner>()
+            .Select(x => x.SpawnedInstance)
+            .ToList()
+            .ForEach(instance =>
+            {
+                _enemyList.Add(instance);
+                instance.transform.SetParent(_enemyContainer.transform, true);
+            });
     }
 
+    protected override void Update()
+    {
+        for(int i = 1; i <= _enemyList.Count; i++)
+        {
+            if (_enemyList[i - 1] != null)
+            {
+                break;
+            }
+
+            if (i == _enemyList.Count)
+            {
+                GameWasWon = true;
+                _gameOverScreen.SetActive(true);
+                _player.gameObject.SetActive(false);
+                Invoke("ReturnToMainMenu", 10f);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Callback for when the player has died.
+    /// </summary>
+    public void PlayerDied()
+    {
+        _gameOverScreen.SetActive(true);
+        Invoke("ReturnToMainMenu", 5f);
+    }
+
+    /// <summary>
+    /// Callback for pausing gameplay.
+    /// </summary>
     public void Pause()
     {
         Time.timeScale = 0;
         OnLevelPaused.Invoke();
     }
 
+    /// <summary>
+    /// Callback to resume playing.
+    /// </summary>
     public void Resume()
     {
         Time.timeScale = 1;
         OnLevelResumed.Invoke();
+    }
+
+    private void ReturnToMainMenu()
+    {
+        GameManager.Instance.LoadLevel(ProjectSettings.Level.MainMenu);
     }
 
     private void StartLevel(int levelNumber)

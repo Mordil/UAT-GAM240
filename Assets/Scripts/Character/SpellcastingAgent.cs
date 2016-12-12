@@ -8,9 +8,15 @@ using UnityEngine.Events;
 /// <seealso cref="ISpellcastingAnimationHandler"/>
 public class SpellcastingAgent : MonoBehaviour, ISpellcastingAnimationHandler
 {
+    /// <summary>
+    /// Event that emits with a spell's name.
+    /// </summary>
     [Serializable]
     public class SpellcastEvent : UnityEvent<string> { }
 
+    /// <summary>
+    /// Event emitted when a spell has been casted.
+    /// </summary>
     public SpellcastEvent OnSpellCast;
 
     private IInputController _inputController;

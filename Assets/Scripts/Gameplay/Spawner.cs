@@ -5,11 +5,19 @@
 /// </summary>
 public class Spawner : MonoBehaviour
 {
+    /// <summary>
+    /// Reference to the spawned instance of the prefab <see cref="GameObject"/>.
+    /// </summary>
+    public GameObject SpawnedInstance { get { return _spawnedInstance; } }
+
     [SerializeField]
     private float _spawnDelay = 3f;
     private float _timeToSpawnTimer;
 
     [Header("Spawn Settings")]
+
+    [SerializeField]
+    private bool _continuouslySpawn;
 
     [SerializeField]
     private Vector3 _offset;
@@ -39,6 +47,11 @@ public class Spawner : MonoBehaviour
 
     private void Update()
     {
+        if (!_continuouslySpawn)
+        {
+            return;
+        }
+
         if (_spawnedInstance == null && _timeToSpawnTimer == 0)
         {
             _timeToSpawnTimer = _spawnDelay;

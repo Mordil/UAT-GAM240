@@ -3,11 +3,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// AI controller for passing input into the <see cref="NavMeshAgent"/> and <see cref="Animator"/>.
+/// </summary>
 [RequireComponent(typeof(Animator))]
 public class AIInputController : MonoBehaviour, IInputController
 {
     private const float OFF_MESH_LINK_MOVEMENT_CLOSE_ENOUGH_CONSTANT = .04f;
 
+    /// <summary>
+    /// The <see cref="Transform"/> of the AI's target to follow.
+    /// </summary>
     public Transform Target { get { return _targetTransform; } }
 
     [Header("Components")]
@@ -35,6 +41,7 @@ public class AIInputController : MonoBehaviour, IInputController
     private float _maxDistance = 10f;
     [SerializeField]
     [Range(0, 5)]
+    private float _spellcastingDelayFactor;
     private float _spellcastingDelay;
     private float _spellcastingTimer;
 
@@ -95,6 +102,7 @@ public class AIInputController : MonoBehaviour, IInputController
             if (_spellcastingTimer >= _spellcastingDelay)
             {
                 _spellcastingTimer = 0;
+                _spellcastingDelay = UnityEngine.Random.Range(_spellcastingDelayFactor, _spellcastingDelayFactor * 2);
 
                 if (_navMeshAgent.hasPath && _navMeshAgent.remainingDistance <= _maxDistance)
                 {

@@ -27,6 +27,8 @@ public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
 
     [SerializeField]
     private Animator _animator;
+    [SerializeField]
+    private Transform _myTransform;
 
     /// <summary>
     /// Unity lifecycle event.
@@ -46,6 +48,19 @@ public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
         if (_animator == null)
         {
             _animator = GetComponent<Animator>();
+        }
+
+        if (_myTransform == null)
+        {
+            _myTransform = gameObject.transform;
+        }
+    }
+
+    protected virtual void Update()
+    {
+        if (_myTransform.position.y <= -10)
+        {
+            _healthComponent.Kill();
         }
     }
 
