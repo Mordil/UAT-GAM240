@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Master class that manages spellcasting and spells for Characters.
@@ -7,9 +8,22 @@ using UnityEngine;
 /// <seealso cref="ISpellcastingAnimationHandler"/>
 public class SpellcastingAgent : MonoBehaviour, ISpellcastingAnimationHandler
 {
+    /// <summary>
+    /// Event that emits with a spell's name.
+    /// </summary>
+    [Serializable]
+    public class SpellcastEvent : UnityEvent<string> { }
+
+    /// <summary>
+    /// Event emitted when a spell has been casted.
+    /// </summary>
+    public SpellcastEvent OnSpellCast;
+
+    private IInputController _inputController;
+
     [SerializeField]
     private WeaponAgent _weaponAgent;
-
+    
     [SerializeField]
     [Tooltip("The position spells should be spawned at when the character is unarmed.")]
     private Transform _unarmedSpawnPosition;
@@ -26,6 +40,8 @@ public class SpellcastingAgent : MonoBehaviour, ISpellcastingAnimationHandler
         {
             _weaponAgent = GetComponent<WeaponAgent>();
         }
+
+        _inputController = GetComponent<IInputController>();
     }
     
     /// <summary>
@@ -35,21 +51,36 @@ public class SpellcastingAgent : MonoBehaviour, ISpellcastingAnimationHandler
     /// <seealso cref="ISpellcastingAnimationHandler.SpellcastAnimationFinished(string)"/>
     public void SpawnSpell(string spellName)
     {
-        // get the position based on the character being armed/unarmed
-        Transform spawnPosition = GetSpawnPosition();
-
         // instantiate and do necessary logic for the matching spell
         switch (spellName)
         {
             case SpellNames.FIREBALL:
-                var collisionScript = (Instantiate(_fireballPrefab, spawnPosition.position, _fireballPrefab.transform.rotation) as GameObject)
-                    .GetComponentInChildren<DigitalRuby.PyroParticles.FireCollisionForwardScript>();
-                collisionScript.Spawner = this.gameObject;
+                SpawnFireball();
                 break;
 
             default:
                 throw new NotImplementedException();
         }
+
+        OnSpellCast.Invoke(spellName);
+    }
+
+    private void SpawnFireball()
+    {
+        // get the position based on the character being armed/unarmed
+        Transform spawnPosition = GetSpawnPosition();
+        Quaternion spawnRotation = gameObject.transform.rotation;
+
+        var controller = _inputController as AIInputController;
+        if (controller != null && controller.Target != null)
+        {
+            spawnPosition.LookAt(controller.Target.position + new Vector3(0, 1.25f, 0));
+            spawnRotation = spawnPosition.rotation;
+        }
+
+        var collisionScript = (Instantiate(_fireballPrefab, spawnPosition.position, spawnRotation) as GameObject)
+            .GetComponentInChildren<DigitalRuby.PyroParticles.FireCollisionForwardScript>();
+        collisionScript.Spawner = this.gameObject;
     }
 
     private Transform GetSpawnPosition()

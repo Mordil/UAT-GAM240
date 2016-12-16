@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using L4.Unity.Common;
+using UnityEngine;
 
 /// <summary>
 /// Handles player input and carries commands to other components.
 /// </summary>
-public class PlayerInputController : MonoBehaviour
+public class PlayerInputController : MonoBehaviour, IInputController
 {
+    private bool _isCastingASpell;
+
     [SerializeField]
     private float _movementSpeed = 4f;
     [SerializeField]
@@ -18,7 +21,7 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField]
     private Animator _animator;
 
-    private void Start()
+    private void Awake()
     {
         if (_animator == null)
         {
@@ -29,6 +32,15 @@ public class PlayerInputController : MonoBehaviour
         {
             _characterManager = GetComponent<CharacterManager>();
         }
+
+        if (_spellcastingAgent == null)
+        {
+            _spellcastingAgent = GetComponent<SpellcastingAgent>();
+        }
+
+        _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 0; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 1; });
     }
 
     private void Update()
@@ -72,9 +84,15 @@ public class PlayerInputController : MonoBehaviour
         {
             _animator.SetTrigger(AnimationParameters.Arissa.Triggers.MeleeAttacks.NORMAL);
         }
-        else if (Input.GetKeyUp(KeyCode.R))
+        else if (Input.GetKeyUp(KeyCode.R) && !_isCastingASpell)
         {
+            _isCastingASpell = true;
             _animator.SetTrigger(AnimationParameters.Arissa.Triggers.Spellcasting.FIREBALL);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            GameManager.Instance.CurrentScene.As<GameplayLevel>().Pause();
         }
     }
 }

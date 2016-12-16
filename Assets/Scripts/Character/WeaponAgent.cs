@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Class that handles <seealso cref="Weapon"/> instances for characters.
@@ -6,21 +8,30 @@
 public class WeaponAgent : MonoBehaviour
 {
     /// <summary>
+    /// A <see cref="UnityEvent"/> that emits a <see cref="Weapon"/> object.
+    /// </summary>
+    [Serializable]
+    public class WeaponEvent : UnityEvent<Weapon> { }
+
+    /// <summary>
     /// Returns true if there is a reference to a Weapon found.
     /// </summary>
     public bool HasWeaponEquipped { get { return CurrentWeapon != null; } }
 
     /// <summary>
-    /// The current Weapon equipped by the character.
+    /// Event emitted when a new <see cref="Weapon"/> has been equipped.
     /// </summary>
-    /// <seealso cref="Weapon"/>
+    public WeaponEvent OnEquippedWeapon;
+
+    /// <summary>
+    /// The current <see cref="Weapon"/> equipped by the character.
+    /// </summary>
     [SerializeField]
     protected Weapon CurrentWeapon;
 
     /// <summary>
-    /// The Animator (if exists) attached to the GameObject.
+    /// The <see cref="Animator"/> (if exists) attached to the GameObject.
     /// </summary>
-    /// <seealso cref="Animator"/>
     [SerializeField]
     protected Animator AnimatorComponent;
     /// <summary>
@@ -74,10 +85,13 @@ public class WeaponAgent : MonoBehaviour
 
         // Update the animation index
         AnimatorComponent.SetInteger(AnimationParameters.Arissa.Integers.WEAPON_ANIMATION, (int)CurrentWeapon.AnimationStyle);
+
+        // emit the new weapon event
+        OnEquippedWeapon.Invoke(CurrentWeapon);
     }
 
     /// <summary>
-    /// Returns the currently equipped weapon, or null if one isn't.
+    /// Returns the currently equipped <see cref="Weapon"/>, or null if one isn't.
     /// </summary>
     /// <returns><see cref="Weapon"/> or null</returns>
     public Weapon GetEquippedWeapon()

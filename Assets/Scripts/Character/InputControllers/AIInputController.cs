@@ -1,10 +1,20 @@
-﻿using System.Collections;
+﻿using L4.Unity.Common;
+using System;
+using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// AI controller for passing input into the <see cref="NavMeshAgent"/> and <see cref="Animator"/>.
+/// </summary>
 [RequireComponent(typeof(Animator))]
-public class AIInputController : MonoBehaviour
+public class AIInputController : MonoBehaviour, IInputController
 {
     private const float OFF_MESH_LINK_MOVEMENT_CLOSE_ENOUGH_CONSTANT = .04f;
+
+    /// <summary>
+    /// The <see cref="Transform"/> of the AI's target to follow.
+    /// </summary>
+    public Transform Target { get { return _targetTransform; } }
 
     [Header("Components")]
     [SerializeField]
@@ -25,9 +35,15 @@ public class AIInputController : MonoBehaviour
     [SerializeField]
     [Tooltip("Can the AI cast spells at a target?")]
     private bool _canCastSpells = true;
+    private bool _isCastingASpell;
 
     [SerializeField]
     private float _maxDistance = 10f;
+    [SerializeField]
+    [Range(0, 5)]
+    private float _spellcastingDelayFactor;
+    private float _spellcastingDelay;
+    private float _spellcastingTimer;
 
     [SerializeField]
     private SpellcastingAgent _spellcastingAgent;
@@ -38,11 +54,6 @@ public class AIInputController : MonoBehaviour
         {
             _navMeshAgent = GetComponentInChildren<NavMeshAgent>();
             _navMeshAgent.updateRotation = true;
-        }
-
-        if (_targetTransform == null)
-        {
-            _targetTransform = FindObjectOfType<PlayerInputController>().transform;
         }
 
         if (_myTransform == null)
@@ -61,16 +72,47 @@ public class AIInputController : MonoBehaviour
             _spellcastingAgent = GetComponent<SpellcastingAgent>();
         }
 
+        _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
+
         GetComponentInChildren<Health>().OnKilled.AddListener(() => { _navMeshAgent.enabled = false; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 0; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 1; });
+    }
+
+    private void Start()
+    {
+        if (_targetTransform == null)
+        {
+            _targetTransform = FindObjectOfType<PlayerInputController>().gameObject.transform;
+        }
+        _targetTransform.gameObject.GetComponent<Health>().OnKilled.AddListener(() => { _canCastSpells = false; });
     }
 
     private void Update()
     {
-        if (_canCastSpells && _spellcastingAgent)
+        if (_targetTransform == null)
         {
-            if (_navMeshAgent.remainingDistance <= _maxDistance)
+            this.enabled = false;
+            return;
+        }
+
+        if (_canCastSpells && !_isCastingASpell &&
+            _spellcastingAgent != null && _targetTransform != null)
+        {
+            if (_spellcastingTimer >= _spellcastingDelay)
             {
-                _animator.SetTrigger(AnimationParameters.Arissa.Triggers.Spellcasting.FIREBALL);
+                _spellcastingTimer = 0;
+                _spellcastingDelay = UnityEngine.Random.Range(_spellcastingDelayFactor, _spellcastingDelayFactor * 2);
+
+                if (_navMeshAgent.hasPath && _navMeshAgent.remainingDistance <= _maxDistance)
+                {
+                    _isCastingASpell = true;
+                    _animator.SetTrigger(AnimationParameters.Arissa.Triggers.Spellcasting.FIREBALL);
+                }
+            }
+            else
+            {
+                _spellcastingTimer += Time.deltaTime;
             }
         }
     }
@@ -166,6 +208,5 @@ public class AIInputController : MonoBehaviour
         _navMeshAgent.Resume();
 
         _offMeshLinkCoroutine = null;
-        StopCoroutine(_offMeshLinkCoroutine);
     }
 }
