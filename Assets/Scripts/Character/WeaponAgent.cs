@@ -28,6 +28,7 @@ public class WeaponAgent : MonoBehaviour
     /// </summary>
     /// <seealso cref="Transform"/>
     [SerializeField]
+    [Tooltip("This object will be a sibling to the weapon, as it is used as a reference for the weapon's transform.")]
     protected Transform AttachmentPoint;
 
     /// <summary>
@@ -46,29 +47,6 @@ public class WeaponAgent : MonoBehaviour
     }
 
     /// <summary>
-    /// Unity animation lifecycle event.
-    /// </summary>
-    protected virtual void OnAnimatorIK()
-    {
-        if (CurrentWeapon != null)
-        {
-            if (CurrentWeapon.IKTarget != null)
-            {
-                // give IK data to the animation system
-                AnimatorComponent.SetIKPosition(AvatarIKGoal.RightHand, CurrentWeapon.IKTarget.position);
-                AnimatorComponent.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-                AnimatorComponent.SetIKRotation(AvatarIKGoal.RightHand, CurrentWeapon.IKTarget.rotation);
-                AnimatorComponent.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
-            }
-            else
-            {
-                AnimatorComponent.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
-                AnimatorComponent.SetIKRotationWeight(AvatarIKGoal.RightHand, 0);
-            }
-        }
-    }
-
-    /// <summary>
     /// Does necessary work for equipping a new <see cref="Weapon"/>.
     /// </summary>
     /// <param name="pickup">The weapon picked up.</param>
@@ -78,14 +56,21 @@ public class WeaponAgent : MonoBehaviour
         var prefab = pickup.As<WeaponPickup>().WeaponPrefab;
         var newWeapon = Instantiate(prefab) as GameObject;
 
-        // set the parent in the hierarchy and its transform
-        newWeapon.transform.SetParent(AttachmentPoint);
-        newWeapon.transform.localPosition = AttachmentPoint.transform.localPosition;
-        newWeapon.transform.localRotation = AttachmentPoint.transform.localRotation;
-
         // store the reference and assign its owner as the master CharacterManager
         CurrentWeapon = newWeapon.GetComponent<Weapon>();
         CurrentWeapon.SetOwner(GetComponent<CharacterManager>());
+
+        // set the parent in the hierarchy and its transform
+        newWeapon.transform.SetParent(AttachmentPoint.parent);
+        newWeapon.transform.localPosition = AttachmentPoint.transform.localPosition;
+        newWeapon.transform.localRotation = AttachmentPoint.transform.localRotation;
+
+        // Updates the weapon's visual based on the desired settings.
+        var rotation = CurrentWeapon.WeaponVisual.transform.localRotation;
+        rotation *= Quaternion.Euler(CurrentWeapon.DesiredLocalRotation);
+
+        CurrentWeapon.WeaponVisual.transform.localPosition = new Vector3(0, 0, 0);
+        CurrentWeapon.WeaponVisual.transform.localRotation = rotation;
 
         // Update the animation index
         AnimatorComponent.SetInteger(AnimationParameters.Arissa.Integers.WEAPON_ANIMATION, (int)CurrentWeapon.AnimationStyle);

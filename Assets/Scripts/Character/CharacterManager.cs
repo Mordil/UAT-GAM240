@@ -128,7 +128,7 @@ public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
         var success = false;
         var pickup = obj.GetComponent<BasePickup>();
         
-        if (pickup != null)
+        if (pickup != null && WeaponAgentComponent != null)
         {
             // since the collided object was a pickup, we'll want to return true
             success = true;
