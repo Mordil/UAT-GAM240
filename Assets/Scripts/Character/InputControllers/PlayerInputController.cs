@@ -51,6 +51,11 @@ public class PlayerInputController : MonoBehaviour, IInputController
     {
         if (_isPaused)
         {
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                GameManager.Instance.CurrentScene.As<GameplayLevel>().Resume();
+            }
+
             return;
         }
 

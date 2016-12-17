@@ -25,17 +25,23 @@ public class HUDManager : MonoBehaviour
     [SerializeField]
     private Image _equippedWeaponImage;
 
+    [Header("Audio")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
     private void Awake()
     {
         _level = GameManager.Instance.CurrentScene.As<GameplayLevel>();
 
         _level.OnLevelPaused.AddListener(() =>
         {
+            _audioSource.Play();
             _gameHUD.gameObject.SetActive(false);
             _pauseMenu.gameObject.SetActive(true);
         });
         _level.OnLevelResumed.AddListener(() =>
         {
+            _audioSource.Play();
             _gameHUD.gameObject.SetActive(true);
             _pauseMenu.gameObject.SetActive(false);
         });
