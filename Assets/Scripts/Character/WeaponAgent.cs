@@ -50,6 +50,13 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
     [SerializeField]
     private GameObject _bloodSplatterFX;
 
+    [Header("Sound Effects")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip[] _attackAudioClips;
+
     /// <summary>
     /// Unity lifecycle event.
     /// </summary>
@@ -71,6 +78,8 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
     /// <seealso cref="IMeleeAttackAnimationHandler.MeleeAttackHitCheck"/>
     public void MeleeAttackHitCheck()
     {
+        PlayAttackAudio();
+
         RaycastHit info;
         Transform myTransform = transform;
 
@@ -90,6 +99,8 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
             {
                 var bloodSplatter = Instantiate(_bloodSplatterFX, endPoint, myTransform.rotation) as GameObject;
                 Destroy(bloodSplatter, 1.5f);
+
+                _audioSource.PlayOneShot(CurrentWeapon.HitSFX);
 
                 health.TakeDamage(CurrentWeapon.Damage);
             }
@@ -136,5 +147,14 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
     public Weapon GetEquippedWeapon()
     {
         return CurrentWeapon;
+    }
+
+    private void PlayAttackAudio()
+    {
+        if (_attackAudioClips.Length > 0)
+        {
+            var index = UnityEngine.Random.Range(0, _attackAudioClips.Length);
+            _audioSource.PlayOneShot(_attackAudioClips[index]);
+        }
     }
 }

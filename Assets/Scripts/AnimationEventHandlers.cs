@@ -31,3 +31,11 @@ public interface IDeathAnimationHandler
     /// </summary>
     void BodyHitGround();
 }
+
+/// <summary>
+/// A handler object for locomotion animation events.
+/// </summary>
+public interface ILocomotionAnimationHandler
+{
+    void OnFootstep(string groundMaterialName);
+}

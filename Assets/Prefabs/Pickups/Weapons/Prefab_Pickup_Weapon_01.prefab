@@ -238,6 +238,7 @@ MonoBehaviour:
   _owner: {fileID: 0}
   _weaponVisual: {fileID: 0}
   _desiredLocalRotation: {x: 0, y: 172, z: 0}
+  _hitSFX: {fileID: 8300000, guid: bc6cc193a6445c046aeeea70bbf2451f, type: 3}
 --- !u!114 &114000010365806186
 MonoBehaviour:
   m_ObjectHideFlags: 1
