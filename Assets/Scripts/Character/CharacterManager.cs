@@ -4,8 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Master class that manages behaviours for Characters.
 /// </summary>
-/// <seealso cref="IMeleeAttackAnimationHandler"/>
-public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
+public class CharacterManager : MonoBehaviour
 {
     [SerializeField]
     private Health _healthComponent;
@@ -20,10 +19,6 @@ public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
     /// The <see cref="WeaponAgent"/> (if one exists) attached to the GameObject.
     /// </summary>
     public WeaponAgent WeaponAgentComponent { get { return _weaponAgent; } }
-
-    [SerializeField]
-    [Tooltip("The max distance an object can be in front of this character and still be hit by melee attacks.")]
-    private float _meleeAttackDistance = 2f;
 
     [SerializeField]
     private Animator _animator;
@@ -109,33 +104,6 @@ public class CharacterManager : MonoBehaviour, IMeleeAttackAnimationHandler
         if (camera != null)
         {
             camera.gameObject.SetActive(false);
-        }
-    }
-
-    /// <summary>
-    /// Checks if the character has hit a damageable object and deals necessary damage.
-    /// </summary>
-    /// <seealso cref="IMeleeAttackAnimationHandler.MeleeAttackHitCheck"/>
-    public void MeleeAttackHitCheck()
-    {
-        RaycastHit info;
-
-        // get the origin as the "center", as the origin is down near the feet
-        Vector3 offsetOrigin = transform.position + transform.up;
-        // get the end position by adding just the max distance to the forward
-        Vector3 endPoint = new Vector3(offsetOrigin.x, offsetOrigin.y, offsetOrigin.z + _meleeAttackDistance);
-
-        // do a linecast to see if anything is between us, rather than AT the point casted to
-        if (Physics.Linecast(offsetOrigin, endPoint, out info))
-        {
-            // we hit something, so try to grab a health component
-            var health = info.collider.gameObject.GetComponent<Health>();
-
-            // if it has one, and the character has a weapon equipped, get the damage of the weapon and apply it
-            if (health != null && WeaponAgentComponent.HasWeaponEquipped)
-            {
-                health.TakeDamage(WeaponAgentComponent.GetEquippedWeapon().Damage);
-            }
         }
     }
 

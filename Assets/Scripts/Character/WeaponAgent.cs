@@ -5,7 +5,8 @@ using UnityEngine.Events;
 /// <summary>
 /// Class that handles <seealso cref="Weapon"/> instances for characters.
 /// </summary>
-public class WeaponAgent : MonoBehaviour
+/// <seealso cref="IMeleeAttackAnimationHandler"/>
+public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
 {
     /// <summary>
     /// A <see cref="UnityEvent"/> that emits a <see cref="Weapon"/> object.
@@ -42,6 +43,10 @@ public class WeaponAgent : MonoBehaviour
     [Tooltip("This object will be a sibling to the weapon, as it is used as a reference for the weapon's transform.")]
     protected Transform AttachmentPoint;
 
+    [SerializeField]
+    [Tooltip("The max distance an object can be in front of this character and still be hit by melee attacks.")]
+    private float _meleeAttackDistance = 2f;
+
     /// <summary>
     /// Unity lifecycle event.
     /// </summary>
@@ -55,6 +60,33 @@ public class WeaponAgent : MonoBehaviour
         // set the default animation index
         var index = (CurrentWeapon != null) ? (int)CurrentWeapon.AnimationStyle : 0;
         AnimatorComponent.SetInteger(AnimationParameters.Arissa.Integers.WEAPON_ANIMATION, index);
+    }
+
+    /// <summary>
+    /// Checks if the character has hit a damageable object and deals necessary damage.
+    /// </summary>
+    /// <seealso cref="IMeleeAttackAnimationHandler.MeleeAttackHitCheck"/>
+    public void MeleeAttackHitCheck()
+    {
+        RaycastHit info;
+
+        // get the origin as the "center", as the origin is down near the feet
+        Vector3 offsetOrigin = transform.position + transform.up;
+        // get the end position by multiplying forward by the distance and add the current position to offset it.
+        Vector3 endPoint = transform.forward * _meleeAttackDistance + transform.position;
+
+        // do a linecast to see if anything is between us, rather than AT the point casted to
+        if (Physics.Linecast(offsetOrigin, endPoint, out info))
+        {
+            // we hit something, so try to grab a health component
+            var health = info.collider.gameObject.GetComponent<Health>();
+
+            // if it has one, and the character has a weapon equipped, get the damage of the weapon and apply it
+            if (health != null && HasWeaponEquipped)
+            {
+                health.TakeDamage(CurrentWeapon.Damage);
+            }
+        }
     }
 
     /// <summary>

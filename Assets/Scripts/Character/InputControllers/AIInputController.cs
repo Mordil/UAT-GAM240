@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// AI controller for passing input into the <see cref="NavMeshAgent"/> and <see cref="Animator"/>.
@@ -75,8 +76,6 @@ public class AIInputController : MonoBehaviour, IInputController
         _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
 
         GetComponentInChildren<Health>().OnKilled.AddListener(() => { _navMeshAgent.enabled = false; });
-        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 0; });
-        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 1; });
     }
 
     private void Start()
