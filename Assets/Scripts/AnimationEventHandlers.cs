@@ -20,3 +20,14 @@ public interface IMeleeAttackAnimationHandler
     /// </summary>
     void MeleeAttackHitCheck();
 }
+
+/// <summary>
+/// A handler object for death animation events.
+/// </summary>
+public interface IDeathAnimationHandler
+{
+    /// <summary>
+    /// Animation event fired when the animated body lands on the ground.
+    /// </summary>
+    void BodyHitGround();
+}

@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Master class that manages behaviours for Characters.
 /// </summary>
-public class CharacterManager : MonoBehaviour
+public class CharacterManager : MonoBehaviour, IDeathAnimationHandler
 {
     [SerializeField]
     private Health _healthComponent;
@@ -24,6 +24,13 @@ public class CharacterManager : MonoBehaviour
     private Animator _animator;
     [SerializeField]
     private Transform _myTransform;
+
+    [Header("Sound Effects")]
+    [SerializeField]
+    private AudioSource _ambientAudioSource;
+
+    [SerializeField]
+    private AudioClip _bodyHittingGroundSFX;
 
     /// <summary>
     /// Unity lifecycle event.
@@ -105,6 +112,15 @@ public class CharacterManager : MonoBehaviour
         {
             camera.gameObject.SetActive(false);
         }
+    }
+
+    /// <summary>
+    /// Plays a sound effect of the body hitting the ground.
+    /// </summary>'
+    /// <seealso cref="IDeathAnimationHandler.BodyHitGround"/>
+    public void BodyHitGround()
+    {
+        _ambientAudioSource.PlayOneShot(_bodyHittingGroundSFX);
     }
 
     private void HideSelf()
