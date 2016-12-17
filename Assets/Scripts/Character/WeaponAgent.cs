@@ -42,10 +42,13 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
     [SerializeField]
     [Tooltip("This object will be a sibling to the weapon, as it is used as a reference for the weapon's transform.")]
     protected Transform AttachmentPoint;
-
+    
     [SerializeField]
     [Tooltip("The max distance an object can be in front of this character and still be hit by melee attacks.")]
     private float _meleeAttackDistance = 2f;
+
+    [SerializeField]
+    private GameObject _bloodSplatterFX;
 
     /// <summary>
     /// Unity lifecycle event.
@@ -69,11 +72,12 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
     public void MeleeAttackHitCheck()
     {
         RaycastHit info;
+        Transform myTransform = transform;
 
         // get the origin as the "center", as the origin is down near the feet
-        Vector3 offsetOrigin = transform.position + transform.up;
+        Vector3 offsetOrigin = myTransform.position + myTransform.up;
         // get the end position by multiplying forward by the distance and add the current position to offset it.
-        Vector3 endPoint = transform.forward * _meleeAttackDistance + transform.position;
+        Vector3 endPoint = myTransform.forward * _meleeAttackDistance + myTransform.position;
 
         // do a linecast to see if anything is between us, rather than AT the point casted to
         if (Physics.Linecast(offsetOrigin, endPoint, out info))
@@ -84,6 +88,9 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
             // if it has one, and the character has a weapon equipped, get the damage of the weapon and apply it
             if (health != null && HasWeaponEquipped)
             {
+                var bloodSplatter = Instantiate(_bloodSplatterFX, endPoint, myTransform.rotation) as GameObject;
+                Destroy(bloodSplatter, 1.5f);
+
                 health.TakeDamage(CurrentWeapon.Damage);
             }
         }
