@@ -105,6 +105,11 @@ public class GameplayLevel : SceneBase
 
     protected override void Update()
     {
+        if (GameWasWon)
+        {
+            return;
+        }
+
         for(int i = 1; i <= _enemyList.Count; i++)
         {
             if (_enemyList[i - 1] != null)
@@ -130,7 +135,7 @@ public class GameplayLevel : SceneBase
     {
         PlayNewAudioClip(_deathMusic);
         _gameOverScreen.SetActive(true);
-        Invoke("ReturnToMainMenu", 5f);
+        Invoke("ReturnToMainMenu", 10f);
     }
 
     /// <summary>
