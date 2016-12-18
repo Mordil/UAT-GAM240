@@ -2258,8 +2258,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb42ce8017298b74693cf2cbddafe6f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthComponent: {fileID: 0}
-  _healthSlider: {fileID: 0}
+  _healthComponent: {fileID: 114000010429590086}
+  _healthSlider: {fileID: 114000012008706394}
+  _textComponent: {fileID: 0}
 --- !u!114 &114000013508145934
 MonoBehaviour:
   m_ObjectHideFlags: 1
