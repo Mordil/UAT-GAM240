@@ -74,7 +74,7 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-        if (_currentHealth <= 0 && !_hasCalledOnKilled)
+        if (!_hasCalledOnKilled && _currentHealth <= 0)
         {
             OnKilled.Invoke();
             _hasCalledOnKilled = true;
@@ -108,9 +108,12 @@ public class Health : MonoBehaviour
     /// </summary>
     public void Kill()
     {
-        _currentHealth = 0;
-        _sfxAudioSource.PlayOneShot(_deathClip);
-        OnHealthLost.Invoke();
+        if (!_hasCalledOnKilled)
+        {
+            _currentHealth = 0;
+            _sfxAudioSource.PlayOneShot(_deathClip);
+            OnHealthLost.Invoke();
+        }
     }
 
     /// <summary>

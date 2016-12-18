@@ -422,26 +422,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114000011306123352, guid: 43ffde9340e3f5f47bd3f64944a50ff6,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000010378963932, guid: 43ffde9340e3f5f47bd3f64944a50ff6,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114758726515306642, guid: 43ffde9340e3f5f47bd3f64944a50ff6,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114215499491542134, guid: 43ffde9340e3f5f47bd3f64944a50ff6,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 224000012215343014, guid: 43ffde9340e3f5f47bd3f64944a50ff6,
         type: 2}
       propertyPath: m_AnchorMax.x
