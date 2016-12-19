@@ -65,13 +65,15 @@ public class AIInputController : MonoBehaviour, IInputController
             _animator = GetComponentInChildren<Animator>();
         }
 
-        if (_canCastSpells &&
-            _spellcastingAgent == null)
+        if (_canCastSpells)
         {
-            _spellcastingAgent = GetComponent<SpellcastingAgent>();
-        }
+            if (_spellcastingAgent == null)
+            {
+                _spellcastingAgent = GetComponent<SpellcastingAgent>();
+            }
 
-        _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
+            _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
+        }
 
         GetComponentInChildren<Health>().OnKilled.AddListener(() => { _navMeshAgent.enabled = false; });
     }
