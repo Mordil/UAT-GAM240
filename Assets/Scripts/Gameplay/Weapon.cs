@@ -40,6 +40,7 @@ public class Weapon : MonoBehaviour
     /// </summary>
     /// <seealso cref="Transform"/>
     public Transform WeaponVisual { get { return _weaponVisual; } }
+
     [SerializeField]
     [Tooltip("The ideal local rotation of the visual when equipped.")]
     private Vector3 _desiredLocalRotation;
@@ -47,6 +48,13 @@ public class Weapon : MonoBehaviour
     /// The ideal local rotation of the visual when equipped.
     /// </summary>
     public Vector3 DesiredLocalRotation { get { return _desiredLocalRotation; } }
+
+    [SerializeField]
+    private AudioClip _hitSFX;
+    /// <summary>
+    /// The audio clip to play as a sound effect when the weapon hits a target.
+    /// </summary>
+    public AudioClip HitSFX { get { return _hitSFX; } }
 
     private void Awake()
     {

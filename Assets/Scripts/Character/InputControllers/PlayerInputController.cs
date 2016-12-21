@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerInputController : MonoBehaviour, IInputController
 {
     private bool _isCastingASpell;
+    private bool _isPaused;
 
     [SerializeField]
     private float _movementSpeed = 4f;
@@ -39,12 +40,20 @@ public class PlayerInputController : MonoBehaviour, IInputController
         }
 
         _spellcastingAgent.OnSpellCast.AddListener((spellName) => { _isCastingASpell = false; });
-        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 0; });
-        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _animator.speed = 1; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelPaused.AddListener(() => { _isPaused = true; });
+        GameManager.Instance.CurrentScene.As<GameplayLevel>().OnLevelResumed.AddListener(() => { _isPaused = false; });
+
+        // Stop listening for input on death.
+        GetComponent<Health>().OnKilled.AddListener(() => { _isPaused = true; });
     }
 
     private void Update()
     {
+        if (_isPaused)
+        {
+            return;
+        }
+
         HandlePositionInput();
         HandleRotationInput();
         HandleActions();

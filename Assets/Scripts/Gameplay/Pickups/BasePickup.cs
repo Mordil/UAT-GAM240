@@ -29,11 +29,31 @@ public abstract class BasePickup : MonoBehaviour
     /// </summary>
     public abstract PickupType Type { get; }
 
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip _pickupSFX;
+
+    /// <summary>
+    /// Unity component lifecycle event for initialization.
+    /// </summary>
+    protected virtual void Awake()
+    {
+        if (_audioSource == null)
+        {
+            _audioSource = GetComponentInChildren<AudioSource>();
+        }
+    }
+
     /// <summary>
     /// Method for applying logic for the specific pickup type.
     /// </summary>
     /// <param name="manager">The <see cref="CharacterManager"/> responsible for the character that picked up this item.</param>
-    public abstract void OnPickup(CharacterManager manager);
+    public virtual void OnPickup(CharacterManager manager)
+    {
+        AudioSource.PlayClipAtPoint(_pickupSFX, transform.position);
+    }
 
     /// <summary>
     /// Casts this pickup to the type provided.

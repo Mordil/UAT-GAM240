@@ -5,7 +5,8 @@ using UnityEngine.Events;
 /// <summary>
 /// Class that handles <seealso cref="Weapon"/> instances for characters.
 /// </summary>
-public class WeaponAgent : MonoBehaviour
+/// <seealso cref="IMeleeAttackAnimationHandler"/>
+public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
 {
     /// <summary>
     /// A <see cref="UnityEvent"/> that emits a <see cref="Weapon"/> object.
@@ -41,6 +42,20 @@ public class WeaponAgent : MonoBehaviour
     [SerializeField]
     [Tooltip("This object will be a sibling to the weapon, as it is used as a reference for the weapon's transform.")]
     protected Transform AttachmentPoint;
+    
+    [SerializeField]
+    [Tooltip("The max distance an object can be in front of this character and still be hit by melee attacks.")]
+    private float _meleeAttackDistance = 2f;
+
+    [SerializeField]
+    private GameObject _bloodSplatterFX;
+
+    [Header("Sound Effects")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip[] _attackAudioClips;
 
     /// <summary>
     /// Unity lifecycle event.
@@ -55,6 +70,41 @@ public class WeaponAgent : MonoBehaviour
         // set the default animation index
         var index = (CurrentWeapon != null) ? (int)CurrentWeapon.AnimationStyle : 0;
         AnimatorComponent.SetInteger(AnimationParameters.Arissa.Integers.WEAPON_ANIMATION, index);
+    }
+
+    /// <summary>
+    /// Checks if the character has hit a damageable object and deals necessary damage.
+    /// </summary>
+    /// <seealso cref="IMeleeAttackAnimationHandler.MeleeAttackHitCheck"/>
+    public void MeleeAttackHitCheck()
+    {
+        PlayAttackAudio();
+
+        RaycastHit info;
+        Transform myTransform = transform;
+
+        // get the origin as the "center", as the origin is down near the feet
+        Vector3 offsetOrigin = myTransform.position + myTransform.up;
+        // get the end position by multiplying forward by the distance and add the current position to offset it.
+        Vector3 endPoint = myTransform.forward * _meleeAttackDistance + myTransform.position;
+
+        // do a linecast to see if anything is between us, rather than AT the point casted to
+        if (Physics.Linecast(offsetOrigin, endPoint, out info))
+        {
+            // we hit something, so try to grab a health component
+            var health = info.collider.gameObject.GetComponent<Health>();
+
+            // if it has one, and the character has a weapon equipped, get the damage of the weapon and apply it
+            if (health != null && HasWeaponEquipped)
+            {
+                var bloodSplatter = Instantiate(_bloodSplatterFX, endPoint, myTransform.rotation) as GameObject;
+                Destroy(bloodSplatter, 1.5f);
+
+                _audioSource.PlayOneShot(CurrentWeapon.HitSFX);
+
+                health.TakeDamage(CurrentWeapon.Damage);
+            }
+        }
     }
 
     /// <summary>
@@ -97,5 +147,14 @@ public class WeaponAgent : MonoBehaviour
     public Weapon GetEquippedWeapon()
     {
         return CurrentWeapon;
+    }
+
+    private void PlayAttackAudio()
+    {
+        if (_attackAudioClips.Length > 0)
+        {
+            var index = UnityEngine.Random.Range(0, _attackAudioClips.Length);
+            _audioSource.PlayOneShot(_attackAudioClips[index]);
+        }
     }
 }

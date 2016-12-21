@@ -69,6 +69,14 @@ public class GameplayLevel : SceneBase
     [SerializeField]
     private GameObject _playerPrefab;
 
+    [Header("Audio Settings")]
+    [SerializeField]
+    private AudioSource _audioSource;
+    [SerializeField]
+    private AudioClip _victoryMusic;
+    [SerializeField]
+    private AudioClip _deathMusic;
+
     private int _levelIndex;
     
     private List<GameObject> _enemyList;
@@ -97,6 +105,11 @@ public class GameplayLevel : SceneBase
 
     protected override void Update()
     {
+        if (GameWasWon)
+        {
+            return;
+        }
+
         for(int i = 1; i <= _enemyList.Count; i++)
         {
             if (_enemyList[i - 1] != null)
@@ -106,6 +119,7 @@ public class GameplayLevel : SceneBase
 
             if (i == _enemyList.Count)
             {
+                PlayNewAudioClip(_victoryMusic);
                 GameWasWon = true;
                 _gameOverScreen.SetActive(true);
                 _player.gameObject.SetActive(false);
@@ -119,8 +133,9 @@ public class GameplayLevel : SceneBase
     /// </summary>
     public void PlayerDied()
     {
+        PlayNewAudioClip(_deathMusic);
         _gameOverScreen.SetActive(true);
-        Invoke("ReturnToMainMenu", 5f);
+        Invoke("ReturnToMainMenu", 10f);
     }
 
     /// <summary>
@@ -153,5 +168,12 @@ public class GameplayLevel : SceneBase
         var player = Instantiate(_playerPrefab, _playerSpawner.position, _playerSpawner.rotation) as GameObject;
         _player = player.GetComponent<CharacterManager>();
         player.GetComponent<Health>().OnKilled.AddListener(PlayerDied);
+    }
+
+    private void PlayNewAudioClip(AudioClip newClip)
+    {
+        _audioSource.Stop();
+        _audioSource.clip = newClip;
+        _audioSource.Play();
     }
 }

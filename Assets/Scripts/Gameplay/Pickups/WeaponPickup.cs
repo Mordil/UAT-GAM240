@@ -26,6 +26,8 @@ public class WeaponPickup : BasePickup
     /// <seealso cref="BasePickup.OnPickup(CharacterManager)"/>
     public override void OnPickup(CharacterManager manager)
     {
+        base.OnPickup(manager);
+
         Destroy(this.gameObject);
     }
 }

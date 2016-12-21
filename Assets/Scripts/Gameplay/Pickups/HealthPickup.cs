@@ -27,6 +27,8 @@ public class HealthPickup : BasePickup
     /// <seealso cref="BasePickup.OnPickup(CharacterManager)"/>
     public override void OnPickup(CharacterManager manager)
     {
+        base.OnPickup(manager);
+
         manager.Health.GainHealth(_healValue);
         Destroy(this.gameObject);
     }

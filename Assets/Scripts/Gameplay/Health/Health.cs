@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
@@ -55,6 +56,16 @@ public class Health : MonoBehaviour
     [Tooltip("The current health of the object.")]
     private int _currentHealth;
 
+    [Header("Sound Effects")]
+
+    [SerializeField]
+    private AudioSource _sfxAudioSource;
+
+    [SerializeField]
+    private AudioClip _deathClip;
+    [SerializeField]
+    private AudioClip _hurtClip;
+
     #region Unity Lifecycle
     private void Awake()
     {
@@ -63,7 +74,7 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-        if (_currentHealth <= 0 && !_hasCalledOnKilled)
+        if (!_hasCalledOnKilled && _currentHealth <= 0)
         {
             OnKilled.Invoke();
             _hasCalledOnKilled = true;
@@ -78,6 +89,7 @@ public class Health : MonoBehaviour
     public void TakeDamage(int amount)
     {
         SetNewHealth(_currentHealth - amount);
+        _sfxAudioSource.PlayOneShot(_hurtClip);
         OnHealthLost.Invoke();
     }
 
@@ -96,8 +108,12 @@ public class Health : MonoBehaviour
     /// </summary>
     public void Kill()
     {
-        _currentHealth = 0;
-        OnHealthLost.Invoke();
+        if (!_hasCalledOnKilled)
+        {
+            _currentHealth = 0;
+            _sfxAudioSource.PlayOneShot(_deathClip);
+            OnHealthLost.Invoke();
+        }
     }
 
     /// <summary>
