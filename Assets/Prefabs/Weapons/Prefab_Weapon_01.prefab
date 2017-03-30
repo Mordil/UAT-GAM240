@@ -19,7 +19,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4000012774243676}
-  - component: {fileID: 114000012388198550}
   m_Layer: 0
   m_Name: Prefab_Weapon_01
   m_TagString: Untagged
@@ -109,20 +108,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012765968094}
   m_Mesh: {fileID: 4300000, guid: 479217c3b9925c74bbbeb7790c5c82a8, type: 3}
---- !u!114 &114000012388198550
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011277746626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ffb2cf4c0a46384a9c51cfc4bc14c8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damage: 3
-  _animationStyle: 1
-  _owner: {fileID: 0}
-  _weaponVisual: {fileID: 0}
-  _desiredLocalRotation: {x: 0, y: 0, z: 0}
-  _hitSFX: {fileID: 8300000, guid: bc6cc193a6445c046aeeea70bbf2451f, type: 3}

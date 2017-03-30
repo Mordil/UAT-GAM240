@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ffb2cf4c0a46384a9c51cfc4bc14c8f, type: 3}
+  m_Name: Weapon01
+  m_EditorClassIdentifier: 
+  _damage: 3
+  _animationStyle: 1
+  _owner: {fileID: 0}
+  _weaponVisual: {fileID: 1000011277746626, guid: 553638300bd8df640bd723edb5195b24,
+    type: 2}
+  _desiredLocalRotation: {x: 0, y: 172, z: 0}
+  _hitSFX: {fileID: 8300000, guid: bc6cc193a6445c046aeeea70bbf2451f, type: 3}

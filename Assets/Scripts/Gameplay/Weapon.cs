@@ -3,7 +3,8 @@
 /// <summary>
 /// A generic weapon.
 /// </summary>
-public class Weapon : MonoBehaviour
+[CreateAssetMenu(fileName = "NewWeapon", menuName = "Pickups/Weapon")]
+public class Weapon : ScriptableObject
 {
     /// <summary>
     /// The index values for different weapon animation styles.
@@ -34,12 +35,12 @@ public class Weapon : MonoBehaviour
     public CharacterManager Owner { get { return _owner; } }
 
     [SerializeField]
-    private Transform _weaponVisual;
+    private GameObject _weaponVisual;
     /// <summary>
     /// The reference point IK limbs should attach to.
     /// </summary>
     /// <seealso cref="Transform"/>
-    public Transform WeaponVisual { get { return _weaponVisual; } }
+    public GameObject WeaponVisual { get { return _weaponVisual; } }
 
     [SerializeField]
     [Tooltip("The ideal local rotation of the visual when equipped.")]
@@ -58,11 +59,9 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        if (_weaponVisual == null)
-        {
-            // grab the component from the first child
-            _weaponVisual = this.gameObject.GetComponentsInChildren<Transform>()[1];
-        }
+        Debug.Assert(
+            _weaponVisual != null,
+            string.Format("Weapon {0} is missing a weapon visual!", this.name));
     }
 
     /// <summary>

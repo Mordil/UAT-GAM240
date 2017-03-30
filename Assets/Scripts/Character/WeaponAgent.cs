@@ -114,7 +114,7 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
     /// <seealso cref="WeaponPickup"/>
     public void HandleNewWeapon(WeaponPickup pickup)
     {
-        var prefab = pickup.As<WeaponPickup>().WeaponPrefab;
+        var prefab = pickup.As<WeaponPickup>().AvailableWeapon as UnityEngine.Object;
         var newWeapon = Instantiate(prefab) as GameObject;
 
         // store the reference and assign its owner as the master CharacterManager

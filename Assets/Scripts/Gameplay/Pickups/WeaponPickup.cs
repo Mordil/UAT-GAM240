@@ -4,6 +4,7 @@
 /// A pickup that provides a weapon to equip.
 /// </summary>
 /// <seealso cref="BasePickup"/>
+[ExecuteInEditMode]
 public class WeaponPickup : BasePickup
 {
     /// <summary>
@@ -13,11 +14,19 @@ public class WeaponPickup : BasePickup
     public override PickupType Type { get { return PickupType.Weapon; } }
     
     [SerializeField]
-    private GameObject _weaponPrefab;
+    private Weapon _availableWeapon;
     /// <summary>
-    /// The prefab reference to be used for instantiation.
+    /// The weapon data object to be used for instantiation.
     /// </summary>
-    public GameObject WeaponPrefab { get { return _weaponPrefab; } }
+    public Weapon AvailableWeapon { get { return _availableWeapon; } }
+    
+    private void Awake()
+    {
+        if (this.gameObject.transform.childCount == 0)
+        {
+            Instantiate(_availableWeapon.WeaponVisual, this.transform, false);
+        }
+    }
 
     /// <summary>
     /// Destroys this <see cref="GameObject"/>.

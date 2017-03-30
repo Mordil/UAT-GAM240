@@ -28,23 +28,9 @@ public abstract class BasePickup : MonoBehaviour
     /// The type this pickup represents.
     /// </summary>
     public abstract PickupType Type { get; }
-
-    [SerializeField]
-    private AudioSource _audioSource;
-
+    
     [SerializeField]
     private AudioClip _pickupSFX;
-
-    /// <summary>
-    /// Unity component lifecycle event for initialization.
-    /// </summary>
-    protected virtual void Awake()
-    {
-        if (_audioSource == null)
-        {
-            _audioSource = GetComponentInChildren<AudioSource>();
-        }
-    }
 
     /// <summary>
     /// Method for applying logic for the specific pickup type.
