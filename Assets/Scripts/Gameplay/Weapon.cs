@@ -27,14 +27,6 @@ public class Weapon : ScriptableObject
     public AnimationIndex AnimationStyle { get { return _animationStyle; } }
 
     [SerializeField]
-    private CharacterManager _owner;
-    /// <summary>
-    /// The character that is the logical owner of this weapon.
-    /// </summary>
-    /// <seealso cref="CharacterManager"/>
-    public CharacterManager Owner { get { return _owner; } }
-
-    [SerializeField]
     private GameObject _weaponVisual;
     /// <summary>
     /// The reference point IK limbs should attach to.
@@ -62,15 +54,5 @@ public class Weapon : ScriptableObject
         Debug.Assert(
             _weaponVisual != null,
             string.Format("Weapon {0} is missing a weapon visual!", this.name));
-    }
-
-    /// <summary>
-    /// Sets the owner of this weapon.
-    /// </summary>
-    /// <param name="newOwner">The character manager of the character holding this weapon.</param>
-    /// <seealso cref="CharacterManager"/>
-    public void SetOwner(CharacterManager newOwner)
-    {
-        _owner = newOwner;
     }
 }
