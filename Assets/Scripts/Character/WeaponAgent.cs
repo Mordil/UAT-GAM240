@@ -88,6 +88,9 @@ public class WeaponAgent : MonoBehaviour, IMeleeAttackAnimationHandler
         // get the end position by multiplying forward by the distance and add the current position to offset it.
         Vector3 endPoint = myTransform.forward * _meleeAttackDistance + myTransform.position;
 
+        // Draw a line in the scene for debugging.
+        Debug.DrawLine(offsetOrigin, endPoint, Color.green, 5f);
+
         // do a linecast to see if anything is between us, rather than AT the point casted to
         if (Physics.Linecast(offsetOrigin, endPoint, out info))
         {
