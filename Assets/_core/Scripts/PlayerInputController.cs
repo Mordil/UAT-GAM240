@@ -21,7 +21,7 @@ public class PlayerInputController : MonoBehaviour
     {
 		Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
-		input = Vector3.ClampMagnitude(input, 1f) * Time.deltaTime * _movementSpeed;
+		input = Vector3.ClampMagnitude(input, 1f) * _movementSpeed;
 
         _animator.SetFloat(AnimationLookup.Kach.Floats.HORIZONTAL, input.x);
         _animator.SetFloat(AnimationLookup.Kach.Floats.VERTICAL, input.z);
