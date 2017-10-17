@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInputController : MonoBehaviour
+public class InputAgent : MonoBehaviour, ICharacterAgent
 {
     [SerializeField]
     private float _movementSpeed;
@@ -25,5 +25,9 @@ public class PlayerInputController : MonoBehaviour
 
         _animator.SetFloat(AnimationLookup.Kach.Floats.HORIZONTAL, input.x);
         _animator.SetFloat(AnimationLookup.Kach.Floats.VERTICAL, input.z);
+    }
+
+    public void Initialize()
+    {
     }
 }
